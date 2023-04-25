@@ -40,3 +40,7 @@
   height: 32px;
   border-radius: 9999px;
 }
+
+.none-highlight {
+  -webkit-tap-highlight-color: transparent;
+}

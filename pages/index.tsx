@@ -18,22 +18,20 @@ type PostType = {
 
 function PostBox(post: PostType) {
   return (
-    <Link href={`/posts/${post.path}`}>
-      <article className='v-box w-full max-w-[700px] mb-10 px-30 py-20'>
-        <h3 className='text-22 font-bold text-blue mb-10'>{post.title}</h3>
-        <div className='text-14 mb-20'>{post.description}</div>
-        <div className='flex-between'>
-          <span className='text-14'>{post.publishedAt}</span>
-          <div className='flex-center gap-3'>
-            {post.keywords &&
-              post.keywords.map((keyword) => (
-                <div key={keyword} className='bg-page1 text-blue py-3 px-10 rounded-20 text-14'>
-                  {keyword}
-                </div>
-              ))}
-          </div>
+    <Link href={`/posts/${post.path}`} className='v-box w-full px-30 py-20 max-w-[700px]'>
+      <h3 className='text-22 font-bold text-blue mb-10'>{post.title}</h3>
+      <div className='text-14 mb-20'>{post.description}</div>
+      <div className='flex-between'>
+        <span className='text-14'>{post.publishedAt}</span>
+        <div className='flex-center gap-3'>
+          {post.keywords &&
+            post.keywords.map((keyword) => (
+              <div key={keyword} className='bg-page1 text-blue py-3 px-10 rounded-20 text-14'>
+                {keyword}
+              </div>
+            ))}
         </div>
-      </article>
+      </div>
     </Link>
   );
 }
@@ -50,21 +48,31 @@ interface Props {
 
 export default function Home({ posts, page }: Props) {
   const router = useRouter();
+
+  const onMovePage = (move: 'before' | 'after') => {
+    if (move === 'before') {
+      if (page.current !== 1) router.push(`/?page=${page.current - 1}`);
+    } else {
+      if (page.current !== page.count) router.push(`/?page=${page.current + 1}`);
+    }
+  };
   return !posts.length ? (
     <Page404 />
   ) : (
     <>
-      <div className='px-16'>
-        {posts.map((post) => (
-          <PostBox key={post.path} {...post} />
-        ))}
-        <div className='v-box flex justify-center items-center gap-8 px-20 py-14'>
+      <div className='px-16 w-full'>
+        <div className='flex flex-col items-center gap-10 w-full '>
+          {posts.map((post) => (
+            <PostBox key={post.path} {...post} />
+          ))}
+        </div>
+        <div className='v-box flex justify-center items-center gap-8 mt-70 mx-auto px-20 py-14 max-w-[700px]'>
           <div
             className={cls(
               'page-btn',
               page.current === 1 ? 'stroke-[#c1c1c1] cursor-not-allowed' : 'cursor-pointer hover:bg-page1'
             )}
-            onClick={() => router.push(`/?page=${page.current - 1}`)}
+            onClick={() => onMovePage('before')}
           >
             <ChevronLeft />
           </div>
@@ -82,7 +90,7 @@ export default function Home({ posts, page }: Props) {
               'page-btn',
               page.current === page.count ? 'stroke-[#c1c1c1] cursor-not-allowed' : 'cursor-pointer hover:bg-page1'
             )}
-            onClick={() => router.push(`/?page=${page.current + 1}`)}
+            onClick={() => onMovePage('after')}
           >
             <ChevronRight />
           </div>
@@ -97,7 +105,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
   if (!page) {
     return { props: { posts: [] } };
   }
-  let posts = allPosts.slice(page * 10 - 10, page * 10);
+  const POST_SLICE = 10; // 한 페이지에 ?개 포스트
+  const PAGE_SLICE = 5; // 페이지 버튼 ?개
+  let posts = allPosts.slice(page * POST_SLICE - POST_SLICE, page * POST_SLICE);
   const returnPosts: PostType[] = posts.map((p) => ({
     title: p.title,
     description: p.description,
@@ -106,11 +116,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
     path: p._raw.flattenedPath,
   }));
 
-  const PAGE_SLICE = 10; // 한 페이지에 10개 포스트
-
-  const pageCount = Math.floor((allPosts.length - 1) / PAGE_SLICE) + 1; // 총 페이지 수 구하기
+  const pageCount = Math.floor((allPosts.length - 1) / POST_SLICE) + 1; // 총 페이지 수 구하기
   const start = Math.floor((page - 1) / PAGE_SLICE) * PAGE_SLICE + 1;
-  const last = start + PAGE_SLICE - 1 < pageCount ? start + PAGE_SLICE - 1 : pageCount;
+  const last = start + POST_SLICE - 1 < pageCount ? start + POST_SLICE - 1 : pageCount;
 
   return {
     props: {
