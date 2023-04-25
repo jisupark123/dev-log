@@ -9,7 +9,7 @@ interface Props {
 
 const Post = ({ post }: Props) => {
   const MDXComponent = useMDXComponent(post.body.code);
-
+  console.log(1);
   return (
     <div className=' w-full'>
       <div className='p-40 mx-auto w-full prose max-w-[1024px] post-box'>

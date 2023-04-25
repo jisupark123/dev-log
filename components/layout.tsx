@@ -6,15 +6,13 @@ interface Props {
   children: React.ReactNode;
 }
 
-const NAV_HEIGHT = 64;
-
 const Layout: React.FC<Props> = ({ children }) => {
   return (
     <div className='w-screen min-h-screen bg-page1'>
-      <nav className={`fixed w-full h-${NAV_HEIGHT} bg-element1`}>
+      <nav className={`fixed w-full h-64 bg-element1`}>
         <div className='w-full h-full px-16 flex-between max-w-[1024px] lg:mx-auto lg:px-0'>
           <Link href={'/'} className=' font-cf-star text-30'>
-            지수의 VLog
+            개발 실록
           </Link>
           <div className='flex-center gap-20'>
             <div className='cursor-pointer'>

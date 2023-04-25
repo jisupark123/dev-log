@@ -23,6 +23,7 @@ module.exports = {
         page1: '#F0F0F5',
         element1: '#FFFFFF',
         blue: '#6B7AF7',
+        lightGray: '#C1C1C1',
       },
       borderWidth: px0_10,
       fontSize: px0_100,
