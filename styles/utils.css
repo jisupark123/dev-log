@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.v-box {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 10px 10px 20px 2px rgb(0 0 0 / 5%);
+}
+
+.post-box {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 10px 10px 20px 2px rgb(0 0 0 / 5%);
+}
+
+@media (max-width: 1024px) {
+  .post-box {
+    box-shadow: none;
+  }
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
