@@ -32,15 +32,6 @@
   align-items: center;
 }
 
-.page-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 9999px;
-}
-
 .none-highlight {
   -webkit-tap-highlight-color: transparent;
 }

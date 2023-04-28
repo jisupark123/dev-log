@@ -21,6 +21,7 @@ module.exports = {
       },
       colors: {
         page1: '#F0F0F5',
+        page2: '#E2E2EF',
         element1: '#FFFFFF',
         blue: '#6B7AF7',
         lightGray: '#C1C1C1',
