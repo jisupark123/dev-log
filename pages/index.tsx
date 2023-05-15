@@ -5,6 +5,7 @@ import Page404 from './404';
 
 import PostBox, { PostInfoType } from '@/components/index/postBox';
 import Pagination, { PaginationProps } from '@/components/index/pagination';
+import Link from 'next/link';
 
 interface Props {
   posts: PostInfoType[];
@@ -22,6 +23,9 @@ export default function Home({ posts, pagination }: Props) {
             <PostBox key={post.path} {...post} />
           ))}
         </div>
+        {/* <Link href={'/1'}>
+          <Link href={'/2'}>a</Link>
+        </Link> */}
         <Pagination {...pagination} />
       </div>
     </>
@@ -36,12 +40,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
   const POST_SLICE = 10; // 한 페이지에 ?개 포스트
   const PAGE_SLICE = 5; // 페이지 버튼 ?개
   const posts: PostInfoType[] = allPosts
+    .sort((a, b) => Number(new Date(b.publishedAt)) - Number(new Date(a.publishedAt)))
     .slice(currentPage * POST_SLICE - POST_SLICE, currentPage * POST_SLICE)
     .map((p) => ({
       title: p.title,
       description: p.description,
       publishedAt: p.publishedAt,
-      keywords: p.keywords,
+      keywords: p.keywords || [],
       path: p._raw.flattenedPath,
     }));
 
