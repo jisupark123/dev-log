@@ -26,7 +26,7 @@ export default function PostBox(post: PostInfoType) {
               key={keyword}
               // href={`/keywords/${keyword}`}
               className='bg-page1 text-blue py-3 px-10 rounded-20 text-14 hover:bg-page2'
-              onClick={() => router.push(`/keywords${keyword}`)}
+              onClick={() => router.push(`/keywords/${keyword}`)}
             >
               {keyword}
             </button>

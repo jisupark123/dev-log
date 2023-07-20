@@ -1,6 +1,6 @@
 import React from 'react';
 import { allPosts } from '@/.contentlayer/generated';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext, GetStaticPaths } from 'next';
 import Page404 from './404';
 
 import PostBox, { PostInfoType } from '@/components/index/postBox';
