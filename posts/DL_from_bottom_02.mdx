@@ -1,0 +1,738 @@
+---
+title: 밑바닥부터 시작하는 딥러닝 [1권 4장 - 신경망 학습]
+publishedAt: 2023-09-20
+description: AI에 대해 공부한 내용을 정리한 글입니다.
+keywords: [AI]
+---
+
+## 데이터 주도 학습
+
+신경망의 특징은 데이터를 보고 학습할 수 있다는 점이다.
+데이터에서 학습한다는 것은 가중치 매개변수의 값을 데이터를 보고 자동으로 결정한다는 뜻이다.
+딥러닝은 층의 개수가 수억에 이를 수도 있으니 매개변수를 수작업으로 정한다는 것은 아예 불가능하다.
+
+![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBIWgW_Xdhi2_AjVxT3n3s8P1HvTVUKiQKNw&usqp=CAU)
+위의 이미지는 숫자 5를 표현한 각각 다른 필체의 손글씨다.
+만약 숫자 5를 판별하는 알고리즘을 설계하려고 한다면 생각보다 쉽지 않을 것이다.
+사람이라면 어렵지 않게 인식하지만, 그 안에 숨은 규칙성을 명확한 로직으로 풀기가 만만치 않다.
+
+숫자 5를 인식하는 알고리즘을 밑바닥부터 설계하는 대신, 주어진 데이터를 잘 활용해서 해결하는 것이 낫다.
+그런 방법의 하나로, 이미지에서 특징을 추출하고 그 특징의 패턴을 기계학습 기술로 학습하는 방법이 있다.
+여기서 말하는 특징은 입력 데이터(입력 이미지)에서 본질적인 데이터(중요한 데이터)를 정확하게 추출할 수 있도록 설계된 변환기를 가리킨다.
+이미지의 특징은 보통 벡터로 기술하고, 컴퓨터 비전 분야에서는 SIFT, SURF, HOG 등의 특징을 많이 사용한다.
+이런 특징을 사용하여 이미지 데이터를 벡터로 변환하고, 변환된 벡터를 가지고 지도 학습 방식의 대표 분류 기법인 SVM, KNN 등으로 학습할 수 있다.
+
+이와 같이 기계학습에서는 데이터로부터 규칙을 찾아내는 역할을 **기계**가 담당한다.
+다만, 이미지를 벡터로 변환할 때 사용하는 특징은 여전히 **사람**이 설계하는 것임에 주의해야 한다.
+만약 문제의 적합한 특징을 쓰지 않으면 좋은 결과를 얻기 힘들다.
+예를 들어 개의 얼굴을 구분하려 할 때는 숫자를 인식할 때와는 다른 특징을 사람이 생각해야 할지도 모른다.
+
+<br />
+지금까지 기계학습을 통한 접근법을 이야기했다. 하지만 신경망(딥러닝) 방식은 위와 달리 **사람이 개입하지 않는다**. 신경망을
+이미지를 '있는 그대로' 학습한다. 이미지에 포함된 중요한 특징까지도 '기계'가 스스로 학습한다.
+
+<br />
+
+## 훈련 데이터와 시험 데이터
+
+기계학습 문제는 데이터를 훈련 데이터와 시험 데이터로 나눠 학습과 실험을 수행하는 것이 일반적이다.
+먼저 훈련 데이터만 사용하여 학습하면서 최적의 매개변수를 찾고 시험 데이터를 사용하여 앞서 훈련한 모델의 실력을 평가하는 것이다.
+예를 들어 손글씨를 인식하는 모델이 최종적으로 판별하려는 것은 '특정인의 특정 글자'가 아니라 '임의의 사람의 임의의 글자'이다.
+만약 수중에 있는 훈련 데이터만 잘 판별한다면 그 데이터에 포함된 사람의 글씨체만 학습했을 가능성이 크다.
+
+그래서 데이터셋 하나로만 매개변수의 학습과 평가를 수행하면 올바른 평가가 될 수 없다.
+수중의 데이터셋은 제대로 맞히더라도 다른 데이터셋에는 엉망인 일도 벌어진다.
+한 데이터셋에만 지나치게 최적화된 상태를 오버피팅이라고 한다. 오버피팅 피하기는 기계학습의 중요한 과제이다.
+
+<br />
+## 손실 함수
+
+신경망 학습에서는 현재의 상태를 하나의 지표로 표현한다.
+그리고 그 지표를 가장 좋게 만들어주는 가중치 매개변수의 값을 탐색하는 것이다.
+
+신경망 학습에서 사용하는 지표는 손실 함수(loss function)라고 한다.
+이 손실 함수는 임의의 함수를 사용할 수도 있지만 일반적으로는 평균 제곱 오차와 교차 엔트로피 오차를 사용한다.
+
+(손실 함수는 보통 신경망 성능의 나쁨을 나타낸다.)
+
+<br />
+## 평균 제곱 오차(mean squared error, MSE)
+
+가장 많이 쓰이는 손실 함수는 평균 제곱 오차이다. 수식으로는 다음과 같다.
+
+![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAV4AAAB0CAMAAAD6tarMAAAAMFBMVEX///8AAADu7u6IiIgiIiIRERFERES7u7szMzPMzMxmZmaZmZlVVVWqqqrd3d13d3f1rNjoAAAHUUlEQVR4nO2c6ZajIBCFw765vP/bDmBrVEAhippMfT9mzukWQ65wqyhoXy8AAAAAAAAAAAAAAAAA2AITdncXfhhDEbq7Dz+LExfkrYShHOSthjL4hRnIWxMO8tYE5K0KyFsVkLcqIG9VflDetqG06e7uxcDvyUt6u9LXiNzdD8/Pydtq9y+mSN3dE0dSXveLPJ5VEuKDLWjU3NwRT1LeJlte1F7c503QYAvtM556Ul6/XGZbM0wZzby8uk7XPoMh6v5rn+F5ae8VTjmJN1tj8jh3MNQPCTOofDcboY3kjExFn+YOA0/33r/fIbNzAywf5g4ezNgjMt8tefft119lx++2hdzAV+S9OfZr/WF/iF9N+5QJtb2syLJfe9UjfO5Nxx6i7t6qrcmx35d8ljtg+RR19+R1xrpvvyL+BHBTOaUQPBq/tFe34LMljcDOGDJ7NQeVZb9aRn4o6k9RzSIiDuq+eMF9cOsXSIw3Duk3eE/Jm3dLOnn2G8FcEV5MOG/IkDPgEnldqjHP37Fh58ST/YpZnv0G9NcEb7LuGhkrIWXyuG85twNySmbnU9udhW+W/a4xqGz0fEyz0peN8vZFt6GrB6KQON63zg9Nva1vnv0uadEpkWFJ9I6YFj/62F3WU1QdT4a4HJ8051tdLLffjlVYaZh4sDEoFlcLad1XnKch4sKKULH98gr1KpVKROgJNtkEqcKFmXyp/YoKy2TFUoU5c4IR0ZlZ48vXSIX2y88v8rjENHHPrjSMhfjvN8ay/ujdyimyX9vZtx1iYTSn42DuGf9E+M6lpUmLlYeHr/96f/fAZ4TKUkrst58NJyHlbAmkivNR3+pvW9WuVKMy9oe9yH3AmEg2d2xzlNgvXX5dzKcFkUuzy3vf9r17urpPTFvyyTOb49MyHx+xSmxzpDfOT8iPXyX2260/06ZpY58V/SynIGjDAMTuynMHn5YxX8dJbW1lypu8ak7qG+bFkBato5B+i4M/G2gcbawCxdEx5JydSUdyEVtdXme/We5AgjuI95jAQ41LccoKVs1u9o7JbaTp7Lcf8V4R48sW8wEmM4L04QOiU9qhhmGMhSxRxD2f8clGmh6U17nZ+Pi7uzbpbF6flxBGinDNFNH60RtkySEwsoiIQVN0LLYt0rKbzqbZ1CHzK0TkbcfRNyWVuOjwCZ/rFzZFW86cdfcpqb6y1rDsQ+6qLSLv5J1klEGEgoi3+a8mqGtuZtetmx6T1xdlp0888XgEJtzempOMW/b5NYcmEhzlMPwwHeNspFydltf95t3HsOkxef3nVrAEkl96NgUnncLMwYc7N+umwWuHuHphTensropPmGjrZNNjoc2F4rUlmPVMLV9W6Nk1Ow/fhrX8/hMU5o5DLozZ1Bfnn7wneQ4sF6ErbHpMXhlGRhOsYYrltSpoIwThsem4xLpTQTU9luVj/7OmeV/DX7q3PpJTCg+td9k0WCYW4dOy5XRR4XQulbebzFT5o2RbcUuW7QXFPtNmvkS9DdT6J2ncBnjOfdu19a6aish0yccgtNyocIIctmL9lsDru7Fi0KjsuGETmQzWibR8jwmbh+QHoz/rbVJNzUaxch+/Rzz/ATl0uz/mWyv9ZnQzpVPPRLJ8N0Zm5URn99l2ORxxbUiqKTlivb5aNg0fLPTOWMtDzKeT2ApuKqPzYtEfa9VBxHIFt3eot/7Z8lw/x77pmHREmsrV5C7ArbCH2P4+nrPjlFmQRQc35O1ywppcjn0djW2zEe1TV4lcfXW/q+7h634c+mHT7vPz25jFTpfRsw/ApM0BywwjEis1Y4+EzYcEdw2o1ajPmNW+GkvH8Rk2NZ8P3otI243OmSly7QUkaKUWyxK/7rDxqovv7qz7wGQ/XRc2pYd3MivTJTMbkrNcJOFYleuvzOeXDFUDJrEsPqEaNiWlJ4gup025V9aBhVgd2OZ6C78gC4cZqgYtix0f3SFo2rE7dnaL0An3UjlhLbYG9n9XNk9Nqv2dDi6qG98CThTKbdd3c39/CDAW/Mxsznb0nO3UCNED1M+CoHiEaRI/f6N0umBhWINfQtp/OlpNAv14Z3BpVLSPZKvE2wlBmrGgGb9MSem24Klmtf4uC/OPzvxcC4+HrzZZI1qT2j/BRPhqUTVnEM/428BNEsfcFduVdWQj7Wwl2zmc/eOIeHKA5b6sI48PLveROpTckXwu7vIXkTzyDZyAYk9fUH4zWM7VfXjZ6etYqqvuOrv2o2A5rxpi+bSXMnw3NvUiYoLQR71w6OsJEtuH16S/DL1eHOxHNqzaHvK4LMha3YzA5japIf5VhD/kBUs/ygmng4Ak6lnvM/w1HvdGrd/CFd6Vy5Lv7shv4rK3VqIeqhM1EG7bB0uIbnVwL3fq/u+9nZpI1ApQtxYYof5x7zr9HVqE6BlvXQKiaKTVWW+HAAIoam3m28CuURU6dxCydSeeoGpWgeFtdxxRCf5QgcYXI7GsdiAPAAAAAAAAAAAAAAAAAIDr+QeLpiiI6G4gCQAAAABJRU5ErkJggg==)
+
+여기서 y<sub>k</sub>는 신경망의 출력(신경망이 추정한 값), t<sub>k</sub>는 정답 레이블, k는 데이터의 차원 수를 나타낸다.
+평균 제곱 오차는 각 원소의 출력(추정 값)과 정답 레이블(참 값)의 차 (y<sub>k</sub> - t<sub>k</sub>)를 제곱한 후, 그 총합을 구한다.
+
+평균 제곱 오차를 파이썬으로 구현하면 다음과 같다.
+
+```python
+def mean_squeard_error(y: np.ndarray, t: np.ndarray) -> float:
+    return 0.5 * np.sum((y - t) ** 2)
+```
+
+이 함수를 실제로 사용해 보자.
+
+```python
+# 정답은 2
+t = [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+
+# ex 1) 2일 확률이 가장 높다고 추정함 (0.6)
+y = [0.1, 0.05, 0.6, 0, 0.05, 0.1, 0, 0.1, 0, 0]
+
+print(mean_squeard_error(np.array(y), np.array(t)))  # 0.0975
+
+# ex 2) 7일 확률이 가장 높다고 추정함 (0.6)
+y = [0.1, 0.05, 0.1, 0, 0.05, 0.1, 0.6, 0, 0, 0]
+print(mean_squeard_error(np.array(y), np.array(t)))  # 0.5975
+```
+
+<br />
+## 교차 엔트로피 오차(cross entropy error, CEE)
+
+또 다른 손실 함수로서 교차 엔트로피 오차도 자주 사용된다. 수식으로는 다음과 같다.
+
+![](data:image/png;base64,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)
+
+수식에서 log는 밑이 e인 자연로그(log<sub>e</sub>)다. y<sub>k</sub>는 신경망의 출력, t<sub>k</sub>는 정답 레이블이다.
+또 t<sub>k</sub>는 정답에 해당하는 인덱스의 원소만 1이고 나머지는 0이다(원-핫 인코딩).
+그래서 위의 식은 실질적으로 정답일 때의 추정(t<sub>k</sub>가 1일 때의 y<sub>k</sub>)의 자연로그를 계산하는 식이 된다.
+
+예를 들어 정답 레이블은 '2'가 정답이라 하고 이때의 신경망 출력이 0.6이라면 교차 엔트로피 오차는 -log0.6 = 0.51이 된다.
+또한, 같은 조건에서 신경망 출력이 0.1이라면 -log0.1 = 2.30이 된다.
+이처럼 교차 엔트로피 오차는 정답일 때의 출력이 전체 값을 정하게 된다.
+
+<br />
+[**자연로그 y=log<sub>x</sub>의 그래프**]
+
+![](https://velog.velcdn.com/images/ice-prince/post/6e243b0c-147d-4a5c-94c8-505dad020f72/image.png)
+
+위의 그래프처럼 x가 1일 때 y는 0이 되고 x가 0에 가까워질수록 y의 값은 점점 작아진다.
+교차 엔트로피 오차도 마찬가지로 정답에 해당하는 출력이 커질수록 0에 다가가다가, 그 출력이 1일 때 0이 된다.
+반대로 정답일 때의 출력이 작아질수록 오차는 커진다.
+
+교차 엔트로피 오차를 파이썬으로 구현하면 다음과 같다.
+
+```python
+def cross_entropy_error(y: np.ndarray, t: np.ndarray) -> float:
+    delta = 1e-7
+    return -np.sum(t * np.log(y + delta))
+```
+
+코드 마지막을 보면 np.log를 계산할 때 아주 작은 값인 delta를 더했다.
+이는 np.log() 함수에 0을 입력하면 마이너스 무한대가 되기 때문에 아주 작은 값을 더해서 이를 방지한 것이다.
+
+이 함수를 실제로 사용해 보자.
+
+```python
+# 정답은 2
+t = [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+
+# ex 1) 2일 확률이 가장 높다고 추정함 (0.6)
+y = [0.1, 0.05, 0.6, 0, 0.05, 0.1, 0, 0.1, 0, 0]
+
+print(cross_entropy_error(np.array(y), np.array(t)))  # 0.5108
+
+# ex 2) 7일 확률이 가장 높다고 추정함 (0.6)
+y = [0.1, 0.05, 0.1, 0, 0.05, 0.1, 0.6, 0, 0, 0]
+print(cross_entropy_error(np.array(y), np.array(t)))  # 2.3025
+```
+
+첫 번째 예는 정답일 때의 출력이 0.6인 경우로, 이때의 교차 엔트로피 오차는 약 0.51이다.
+그다음은 정답일 때의 출력이 0.1인 경우로, 이때의 교차 엔트로피 오차는 무려 2.3이다.
+
+즉, 결과(오차 값)가 더 작은 첫 번째 추정이 정답일 가능성이 높다고 판단한 것으로, 앞서 평균 제곱 오차의 판단과 일치한다.
+
+<br />
+## 미니배치 학습
+
+기계학습 문제는 훈련 데이터에 대한 손실 함수의 값을 구하고, 그 값을 최대한 줄여주는 매개변수를 찾아낸다.
+이렇게 하려면 모든 훈련 데이터를 대상으로 손실 함수 값을 구해야 한다.
+즉, 훈련 데이터가 100개 있으면 그로부터 계산한 100개의 손실 함수 값들의 합을 지표로 삼는 것이다.
+
+지금까지 데이터 하나에 대한 손실 함수만 생각해왔으니, 이제 훈련 데이터 모두에 대한 손실 함수의 합을 구하는 방법을 생각해 본다.
+교차 엔트로피 오차는 다음과 같은 식으로 표현된다.
+
+![](data:image/png;base64,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)
+
+데이터가 N개라면 t<sub>nk</sub>는 n번째 데이터의 k값을 의미한다. (y<sub>k</sub>는 신경망의 출력, t<sub>k</sub>는 정답 레이블이다.)
+수식이 복잡해 보이지만 위에서 다뤘던 데이터 하나에 대한 손실 함수를 단순히 N개의 데이터로 확장했을 뿐이다.
+다만, 마지막에 N으로 나누어 정규화하고 있다. N으로 나눔으로써 '평균 손실 함수'를 구하는 것이다.
+이렇게 평균을 구해 사용하면 훈련 데이터 개수와 관계없이 언제든 통일된 지표를 얻을 수 있다.
+
+하지만 모든 데이터를 대상으로 손실 함수의 합을 구하려면 시간이 오래 걸린다. (빅데이터 수준이 되면 데이터의 개수가 수백만에서 수천만도 넘는다.)
+이런 경우 데이터 일부를 추려 전체의 근사치로 이용할 수 있다.
+신경망 학습에서도 훈련 데이터로부터 일부만 골라 학습을 수행한다. 이 일부를 **미니배치(mini-batch)**라고 한다.
+가령 60000장의 훈련 데이터 중에서 100장을 무작위로 뽑아 그 100장만을 사용하여 학습하는 것이다. 이러한 학습 방법을 **미니배치 학습**이라고 한다.
+
+훈련 데이터에서 지정한 수의 데이터를 무작위로 골라내는 코드를 작성해보자.
+np.random.choice() 함수를 통해 무작위로 데이터를 골라낸다.
+
+```python
+# x_train -> (60000, 784) 크기의 훈련 데이터 레이블
+# t_train -> (60000, 10) 크기의 정답 레이블
+
+batch_size = 10 # 골라낼 데이터 개수
+
+batch_mask = np.random.choice(x_train.shape[0], batch_size) # 60000개 데이터 중에서 10개를 골라낸다
+
+x_batch = x_train[batch_mask] # 골라낸 훈련 데이터 레이블 (10, 784)
+t_batch = t_train[batch_mask] # 골라낸 정답 레이블 (10, 10)
+```
+
+## (배치용) 교차 엔트로피 오차 구현하기
+
+그럼, N개의 데이터를 지원하는 교차 엔트로피 오차는 어떻게 구현할까?
+다음은 데이터가 아까처럼 하나인 경우와 N개로 묶여올 경우 모두를 처리한 코드이다.
+
+```python
+def cross_entropy_error(y: np.ndarray, t: np.ndarray) -> float:
+    # [1,2,3] -> [[1,2,3]]
+    if y.ndim == 1:
+        t = t.reshape(1, t.size)
+        y = y.reshape(1, y.size)
+    batch_size = y.shape[0]
+    return -np.sum(t * np.log(y + 1e-7)) / batch_size
+
+```
+
+<br />
+## 왜 손실 함수를 설정하는가?
+
+그런데 왜 굳이 '정확도'라는 지표를 놔두고 손실 함수를 사용해야 하는 걸까?
+
+이 의문은 신경망 학습에서의 '미분'의 역할에 주목한다면 해결된다.
+신경망 학습에서는 최적의 매개변수(가중치와 편향)을 탐색할 때 손실 함수의 값을 가능한 한 작게 하는 매개변수 값을 찾는다.
+이때 매개변수의 미분(정확히는 기울기)을 계산하고, 그 미분 값을 단서로 매개변수의 값을 서서히 갱신하는 과정을 반복한다.
+
+하지만 만약 정확도를 지표로 하면 매개변수의 미분이 대부분의 장소에서 0이 된다.
+정확도는 매개변수의 미소한 변화에는 거의 반응을 보이지 않고, 있더라도 그 값이 불연속적으로 갑자기 변화한다.
+이는 '계단 함수'를 활성화 함수로 사용하지 않는 이유와도 들어맞는다.
+매개변수의 작은 변화가 주는 파장을 계단 함수가 말살하여 손실 함수의 값에는 아무런 변화가 나타나지 않기 때문이다.
+
+<br />
+
+## 수치 미분
+
+경사법에서는 기울기(경사) 값을 기준으로 나아갈 방향을 정한다.
+
+미분은 한순간의 변화량을 표시한 것이다. 수식으로는 다음과 같다.
+
+![](https://velog.velcdn.com/images/ice-prince/post/24a2ced6-89a4-4006-9586-8e0f7fa05487/image.png)
+
+결국, x의 작은 변화가 함수 f(x)를 얼마나 변화시키느냐를 의미한다.
+
+위의 식을 참고하여 함수를 미분하는 계산을 파이썬으로 구현해 보자.
+식을 곧이곧대로 구현하려면 h에 작은 값을 대입해 다음과 같이 계산할 수 있다.
+
+```python
+# 나쁜 구현 예
+def numerical_diff(f, x):
+    h = 10e-50
+    return (f(x + h) - f(x)) / h
+```
+
+이 함수는 '함수 f'와 '함수 f에 넘길 인수 x'라는 두 인수를 받는다. 여기에는 개선해야 할 점이 2개 있다.
+
+앞의 구현에서는 h에 가급적 작은 값을 대입하고 싶었기에 10e-50(10의 1/50승)이라는 작은 값을 이용했다.
+그러나 이 방식은 반올림 오차 문제를 일으킨다.
+반올림 오차는 작은 값(가령 소수점 8자리 이하)이 생략되어 최종 계산 결과에 오차가 생기게 한다.
+
+두 번째 개선은 함수 f의 차분과 관련한 것이다.
+앞의 구현에서는 x+h와 x 사이의 함수 f의 차분을 계산하고 있지만, h를 무한히 0으로 좁히는 것이 불가능하므로 오차가 생길 수밖에 없다.
+
+이 오차를 줄이기 위해 (x+h)와 (x-h)일 때의 함수 f의 차분을 계산하는 방법을 쓰기도 한다.
+이 차분은 x를 중심으로 그 전후의 차분을 계산한다는 의미에서 중심 차분 혹은 중앙 차분이라 한다.
+
+그럼 두 개선점을 적용해 수치 미분을 다시 구현해 보자.
+
+```python
+def numerical_diff(f:callable, x):
+    h = 1e-4  # 0.0001
+    return (f(x + h) - f(x - h)) / (2 * h)
+```
+
+<br />
+## 편미분과 기울기
+
+다음 함수는, 인수들의 제곱 합을 계산하는 단순한 식이지만, 변수가 2개다.
+
+f(x<sub>0</sub>, x<sub>1</sub>) = x<sup>2</sup><sub>0</sub> + x<sup>2</sup><sub>1</sub>
+
+편미분이란, 다변수 함수의 특정 변수에 대한 미분이다.
+즉, 다변수 함수의 한 변수에 대한 미분을 구하면서 나머지 변수를 상수로 취급한다.
+
+그럼, x<sub>0</sub>와 x<sub>1</sub>의 편미분을 동시에 계산하고 싶다면 어떻게 할까?
+(x<sub>0</sub>, x<sub>1</sub>) 양쪽을 각각 편미분하고, 이를 묶어서 (a, b) 형태로 나타낸다.
+이때 (a, b)처럼 모든 변수의 편미분을 벡터로 정리한 것을 기울기(gradient)라고 한다.
+
+기울기는 다음과 같이 구현할 수 있다.
+
+```python
+# 편미분 함수의 기울기 계산
+def numerical_gradient(f:callable, x: np.ndarray) -> np.ndarray:
+    h = 1e4  # 0.0001
+    gradient = np.zeros_like(x)
+
+    for i in range(x.size):
+        tmp_val = x[i]
+
+        # f(x+h) 계산
+        x[i] = tmp_val + h
+        fxh1 = f(x)
+
+        # f(x-h) 계산
+        x[i] = tmp_val - h
+        fxh2 = f(x)
+
+        # gradient[i] - x[i]의 편미분값
+        gradient[i] = (fxh1 - fxh2) / (2 * h)
+        x[i] = tmp_val  # 값 복원
+
+    return gradient
+```
+
+numerical_gradient(f, x) 함수는 numpy 배열 x의 각 원소에 대해서 수치 미분을 구한다.
+그러면 이 함수를 이용해서 실제로 기울기를 계산해 보자.
+
+```python
+def f(x: np.ndarray) -> float:
+    return x[0] ** 2 + x[1] ** 2
+
+numerical_gradient(f, np.array([3.0, 4.0]))  # [6. 8.]
+numerical_gradient(f, np.array([0.0, 2.0]))  # [0. 4.]
+numerical_gradient(f, np.array([3.0, 0.0]))  # [6. 0.]
+```
+
+이처럼 각 점((3,4), (0,2), (3,0))에서의 기울기를 계산할 수 있다.
+그런데 이 기울기라는 게 의미하는 건 뭘까? 그림으로 그려보면 이해가 될 것이다.
+기울기 그림은 방향을 가진 벡터로 그려진다.
+아래 그림을 보면 기울기는 함수의 '가장 낮은 장소(최솟값)'을 가리킨다.
+또 '가장 낮은 곳'에서 멀어질수록 화살표의 크기가 커짐을 알 수 있다.
+
+![](https://velog.velcdn.com/images/ice-prince/post/4d54b969-6017-4673-b2c1-a01c3622b47f/image.png)
+
+위 그림에서 기울기는 가장 낮은 장소를 가리키지만, 실제는 반드시 그렇다고는 할 수 없다.
+사실 기울기는 각 지점에서 낮아지는 방향을 가리킨다.
+더 정확히 말하자면 **기울기가 가리키는 쪽은 각 장소에서 함수의 출력값을 가장 크게 줄이는 방향**이다.
+
+## 경사법(경사 하강법, gradient method)
+
+신경망 학습에서는 최적의 매개변수(가중치와 편향)를 학습 시에 찾아야 한다.
+여기에서 최적이란 손실 함수가 최솟값이 될 때의 매개변수 값이다.
+그러나 일반적인 문제의 손실 함수는 매우 복잡하다.
+매개변수 공간이 광대하여 어디가 최솟값이 되는 곳인지를 짐작할 수 없다.
+이런 상황에서 기울기를 잘 이용해 함수의 최솟값을 찾으려는 것이 경사법이다.
+
+하지만 기울기는 함수 전체의 최솟값을 가리키는 것이 아니라, 각 지점에서 함수의 최솟값을 가리킨다.
+실제로 복잡한 함수에서는 기울기가 가리키는 방향에 최솟값이 없는 경우가 대부분이다.
+
+기울어진 방향이 꼭 최솟값을 가리키는 것은 아니나, 그 방향으로 가야 함수의 값을 줄일 수 있다.
+그래서 최솟값이 되는 장소를 찾는 문제에서는 기울기 정보를 단서로 나아갈 방향을 정해야 한다.
+
+경사법은 현 위치에서 기울어진 방향으로 일정 거리만큼 이동한다.
+그런 다음 이동한 곳에서도 마찬가지로 기울기를 구하고, 또 그 기울어진 방향으로 나아가기를 반복한다.
+이렇게 해서 함수의 값을 점차 줄이는 것이 경사법이다.
+
+경사법을 수식으로 나타내면 다음과 같다.
+
+![](data:image/png;base64,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)
+
+식의 η 기호(eta, 에타)는 갱신하는 양을 나타낸다.
+이를 신경망 학습에서는 학습률(learning rate)라고 한다.
+한 번의 학습으로 얼마만큼 학습해야 할지, 즉 매개변수 값을 얼마나 갱신하느냐를 정하는 것이 학습률이다.
+
+위의 식은 1회에 해당하는 갱신이고, 이 단계를 반복한다.
+변수의 값을 갱신하는 단계를 여러 번 반복하면서 서서히 함수의 값을 줄이는 것이다.
+또, 여기에서는 변수가 2개인 경우를 보여줬지만, 변수의 수가 늘어도 같은 식(각 변수의 편미분 값)으로 갱신하게 된다.
+
+학습률 값은 0.01이나 0.001 등 미리 특정 값으로 정해두어야 하는데, 일반적으로 이 값이 너무 크거나 작으면 '좋은 장소'를 찾아갈 수 없다.
+신경망 학습에서는 보통 이 학습률 값을 변경하면서 올바르게 학습하고 있는지를 확인하면서 진행한다.
+
+경사 하강법은 다음과 같이 간단하게 구현할 수 있다.
+
+```python
+# f - 최적화하려는 함수, init_x - 초깃값, lr - learning rate, step_num - 반복 횟수
+# 최초의 기울기 init_x가 최솟값인 기울기 x가 되어 반환된다.
+def gradient_discent(f: callable, init_x: float, lr=0.01, step_num=100):
+    x = init_x
+    for _ in range(step_num):
+        grad = gradient(f, x)  # 기울기
+        x -= lr * grad
+    return x
+```
+
+이 함수로 다음의 문제를 풀어보자
+
+**문제: 경사법으로 f(x<sub>0</sub>, x<sub>1</sub>) = x<sup>2</sup><sub>0</sub> + x<sup>2</sup><sub>1</sub>의 최솟값을 구하라**
+
+```python
+def f(x: np.ndarray):
+    return x[0] ** 2 + x[1] ** 2
+
+init_x = np.array([-3.0, 4.0])
+gradient_discent(f, init_x, lr=0.1, step_num=100) # [-6.11110793e-10  8.14814391e-10]
+```
+
+여기서는 초깃값을 (-3, 4)으로 설정한 후 경사법을 사용해 최솟값 탐색을 시작한다.
+최종 결과는 (-6.11110793e-10 8.14814391e-10)으로, 거의 (0, 0)에 가까운 결과이다.
+실제로 진정한 최솟값은 (0, 0)이므로 경사법을 통해 거의 정확한 결과를 얻은 것이다.
+
+경사법을 사용한 이 갱신 과정을 그림으로 나타내면 아래의 그림처럼 된다.
+값이 가장 낮은 장소인 원점에 점차 가까워지고 있다.
+
+![](https://velog.velcdn.com/images/ice-prince/post/3d67621b-3564-4149-ac7d-369de3a8fb7d/image.png)
+
+만약 학습률이 너무 크거나 작다면 어떻게 될까?
+아래는 그 실험 결과다.
+
+```python
+# 학습률이 너무 큰 예
+gradient_discent(f, init_x, lr=10.0, step_num=100)
+# [-2.58983747e+13 -1.29524862e+12]
+
+# 학습률이 너무 작은 예
+gradient_discent(f, init_x, lr=1e-10, step_num=100)
+# [-2.99999994  3.99999992]
+```
+
+위와 같이 학습률이 너무 크면 큰 값으로 발산해버린다.
+반대로 너무 작으면 거의 갱신되지 않은 채 끝나버린다.
+이처럼 학습률을 적절히 설정하는 일이 중요하다는 것을 알 수 있다.
+
+<br />
+## 신경망에서의 기울기
+
+신경망 학습에서도 기울기를 구해야 한다.
+여기서 말하는 기울기는 가중치 매개변수에 대한 손실 함수의 기울기다.
+예를 들어 형상이 2x3, 가중치가 W, 손실 함수가 L인 신경망을 생각해 보자.
+이 경우 경사는 aL/aW로 나타낼 수 있다. 수식으로는 다음과 같다.
+
+![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtQ4brcPjp__p-h_JJXyRQONq2hGhnEHggGcj06mfY3HtuyxsT3h-i33jQqemjDbjfK98&usqp=CAU)
+
+aL/aW의 각 원소는 각각의 원소에 대한 편미분이다.
+예를 들어 1행 1번째 원소인 aL/aW<sub>11</sub>은 W<sub>11</sub>을 조금 변경했을 때 손실 함수 L이 얼마나 변화하느냐를 나타낸다.
+여기서 중요한 점은 aL/aW의 형상이 W과 같다는 것이다. 실제로 위의 식에서 aL/aW와 W의 형상은 모두 2x3이다.
+
+간단한 신경을 예로 들어 실제로 기울기를 구하는 코드다.
+
+```python
+class SimpleNet:
+    def __init__(self) -> None:
+        self.W = np.random.randn(2, 3)  # 2x3인 가중치 매개변수
+
+    # 예측값 구하기
+    def predict(self, x: np.ndarray) -> np.ndarray:
+        return np.dot(x, self.W)
+
+    # 손실함수의 값 구하기
+    # x - 입력 데이터, t - 정답 레이블
+    def loss(self, x: np.ndarray, t: np.ndarray) -> float:
+        z = self.predict(x)
+        y = softmax(z)
+        loss = cross_entropy_error(y, t)
+
+        return loss
+```
+
+여기에서는 softmax와 cross_entropy_error 메서드를 이용한다.
+SimpleNet 클래스를 활용한 예시이다.
+
+```python
+x = np.array([0.6, 0.9])  # 입력 데이터
+t = np.array([0, 0, 1])  # 정답 레이블
+
+net = SimpleNet()
+
+f = lambda w: net.loss(x, t)
+
+dW = numerical_gradient(f, net.W)
+print(dW)
+'''
+[[ 0.19586842  0.00525778 -0.2011262 ]
+ [ 0.29380263  0.00788667 -0.30168929]]
+'''
+```
+
+dW는 numerical_gradient(f, net.W)의 결과로, 그 형상은 2x3의 2차원 배열이다.
+dW의 내용을 보면, 예를 들어 aL/aW의 aL/aW<sub>11</sub>은 대략 0.2이다.
+이는 W<sub>11</sub>을 h만큼 늘리면 손실 함수의 값은 0.2h만큼 증가한다는 의미다.
+마찬가지로 aL/aW<sub>23</sub>은 대략 -0.5이니, aL/aW<sub>23</sub>을 h만큼 늘리면 손실 함수의 값은 0.5h만큼 감소하는 것이다.
+그래서 손실 함수를 줄인다는 관점에서 W<sub>11</sub>은 음의 방향으로 갱신하고 W<sub>23</sub>은 양의 방향으로 갱신해야 함을 알 수 있다.
+또 한 번에 갱신되는 양에는 W<sub>23</sub>이 W<sub>11</sub>보다 크게 기여한다는 사실도 알 수 있다.
+
+신경망의 기울기를 구한 다음에는 경사법에 따라 가중치 매개변수를 갱신하기만 하면 된다.
+다음 절에서는 2층 신경망을 대상으로 학습 과정 전체를 구현한다.
+
+<br />
+
+## 학습 알고리즘 구현하기
+
+정리해보면, 신경망 학습의 절차는 다음과 같다.
+
+### 전제
+
+신경망에는 적응 가능한 가중치와 편향이 있고, 이 가중치와 편향을 훈련 데이터에 적응하도록 조정하는 과정을 '학습'이라 한다.
+신경망 학습은 다음과 같이 4단계로 수행한다.
+
+### 1단계 - 미니배치
+
+훈련 데이터 중 일부를 무작위로 가져온다.
+이렇게 선별한 데이터를 미니배치라 하며, 그 미니배치의 손실 함수 값을 줄이는 것이 목표다.
+
+### 2단계 - 기울기 산출
+
+미니배치의 손실 함수 값을 줄이기 위해 각 가중치 매개변수의 기울기를 구한다.
+기울기는 손실 함수의 값을 가장 작게 하는 방향을 제시한다.
+
+### 3단계 - 매개변수 갱신
+
+가중치 매개변수를 기울기 방향으로 아주 조금 갱신한다.
+
+### 4단계 - 반복
+
+1~3단계를 반복한다.
+
+<br />
+
+이것이 신경망 학습이 이뤄지는 순서다.
+이는 경사 하강법으로 매개변수를 갱신하는 방법이며,
+이때 데이터를 무작위로 선정하기 때문에 확률적 경사 하강법(stochastic gradient descent, SGD)라고 부른다.
+대부분의 딥러닝 프레임워크는 SGD라는 함수로 이 기능을 구현하고 있다.
+
+<br />
+
+## 2층 신경망 클래스 구현하기
+
+그럼 실제로 손글씨 숫자를 학습하는 신경망을 구현해 보자.
+처음에는 2층 신경망을 하나의 클래스로 구현하는 것부터 시작한다.
+
+```python
+class TwoLayerNet:
+    def __init__(
+        self, input_size: int, hidden_size: int, output_size: int, weight_init_std=0.01
+    ):
+        # 가중치 초기화
+        self.params = {}
+        self.params["W1"] = weight_init_std * np.random.randn(input_size, hidden_size)
+        self.params["b1"] = np.zeros(hidden_size)
+        self.params["W2"] = weight_init_std * np.random.randn(hidden_size, output_size)
+        self.params["b2"] = np.zeros(output_size)
+
+    # 예측값 구하기
+    def predict(self, x: np.ndarray):
+        W1, W2 = self.params["W1"], self.params["W2"]
+        b1, b2 = self.params["b1"], self.params["b2"]
+
+        a1 = np.dot(x, W1) + b1
+        z1 = sigmoid(a1)
+        a2 = np.dot(z1, W2) + b2
+        y = softmax(a2)
+
+        return y
+
+    # 손실함수의 값 구하기
+    def loss(self, x: np.ndarray, t: np.ndarray):
+        y = self.predict(x)
+        return cross_entropy_error(y, t)
+
+    # 정확도 구하기
+    def accuracy(self, x: np.ndarray, t: np.ndarray):
+        y = self.predict(x)
+        y = np.argmax(y, axis=1)
+        t = np.argmax(t, axis=1)
+
+        accuracy = np.sum(y == t) / float(x.shape[0])
+        return accuracy
+
+    # 기울기 구하기
+    def gradient(self, x: np.ndarray, t: np.ndarray):
+        loss_w = lambda w: self.loss(x, t)
+
+        grads = {}
+        grads["W1"] = numerical_gradient(loss_w, self.params["W1"])
+        grads["b1"] = numerical_gradient(loss_w, self.params["b1"])
+        grads["W2"] = numerical_gradient(loss_w, self.params["W2"])
+        grads["b2"] = numerical_gradient(loss_w, self.params["b2"])
+
+        return grads
+```
+
+TwoLayerNet의 메서드들을 살펴보자.
+**init**(self, input_size: int, hidden_size: int, output_size: int, weight_init_std=0.01) 메서드는 클래스를 초기화한다.
+인수는 순서대로 입력층의 뉴런 수, 은닉층의 뉴런 수, 출력층의 뉴런 수이다.
+예를 들어 손글씨 숫자 인식에서는 크기가 28x28인 입력 이미지가 총 784개이고, 출력은 10개가 된다.
+따라서 input_size=784, output_size=10으로 지정하고 은닉층의 개수인 hidden_size는 적당한 값을 설정한다.
+
+이 초기화 메서드에서는 가중치 매개변수도 초기화한다.
+가중치 매개변수의 초깃값을 무엇으로 설정하냐가 신경망 학습의 성공을 좌우하기도 한다.(이에 대한 자세한 내용은 나중에 살펴본다. 당장은 정규분포를 따르는 난수로, 편향은 0으로 초기화한다.)
+
+loss(self, x, t)는 predict()의 결과와 정답 레이블을 바탕으로 교차 엔트로피 오차를 구하도록 구현했다.
+
+numerical_gradient(self, x, t) 메서드는 각 매개변수의 기울기를 계산한다.
+수치 미분 방식으로 각 매개변수의 손실 함수에 대한 기울기를 계산한다.
+
+마지막 gradient(self, x, t)는 다음 장에서 구현할 메서드이다.
+이 메서드는 오차역전파법을 사용하여 기울기를 효율적이고 빠르게 계산한다.
+
+> numerical_gradient는 수치 미분 방식으로 매개변수의 기울기를 계산한다.
+> 다음 장에서는 이 기울기 계산을 고속으로 수행하는 기법인 오차역전파법을 설명한다.
+> 오차역전파법을 쓰면 수치 미분을 사용할 때와 같은 결과를 훨씬 빠르게 얻을 수 있다.
+
+<br />
+
+## 미니배치 학습 구현하기
+
+미니배치 학습이란 훈련 데이터 중 일부를 무작위로 꺼내고(미니배치), 그 미니배치에 대해서 경사법으로 매개변수를 갱신한다.
+TwoLayerNet 클래스와 MNIST 데이터셋을 사용하여 학습을 수행해 보자.
+
+```python
+from dataset.mnist import load_mnist
+
+    # (훈련 이미지, 훈련 레이블), (시험 이미지, 시험 레이블)
+    (x_train, t_train), (x_test, t_test) = load_mnist(
+        normalize=True, one_hot_label=True
+    )
+    train_loss_list = []
+
+    # 하이퍼파라미터
+    iters_num = 10000  # 반복 횟수
+    train_size = x_train.shape[0]  # 훈련 데이터 사이즈 (10000)
+    batch_size = 100  # 미니배치 크기
+    learning_rate = 0.1
+
+    network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
+
+    for _ in range(iters_num):
+        # 미니배치 획득 - 훈련 데이터에서 batch_size만큼 추출
+        batch_mask = np.random.choice(train_size, batch_size)
+        x_batch = x_train[batch_mask]
+        t_batch = t_train[batch_mask]
+
+        # 기울기 계산
+        grad = network.gradient(x_batch, t_batch)
+
+        # 매개변수 갱신
+        for key in ("W1", "b1", "W2", "b2"):
+            network.params[key] -= learning_rate * grad[key]
+
+        # 학습 경과 기록
+        loss = network.loss(x_batch, t_batch)
+        train_loss_list.append(loss)
+```
+
+여기에서는 미니배치 크기를 100으로 했다.
+즉, 매번 60000개의 훈련 데이터에서 임의로 100개의 데이터(이미지 데이터와 정답 레이블 데이터)를 추려낸다.
+그리고 그 100개의 미니배치를 대상으로 확률적 경사 하강법을 수행해 매개변수를 갱신한다.
+경사법에 의한 갱신 횟수(반복 횟수)를 10000번으로 설정하고, 갱신할 때마다 훈련 데이터에 대한 손실 함수를 계산하고, 그 값을 배열에 추가한다.
+이 손실 함수의 값이 변화하는 추이를 그래프로 나타내면 다음과 같다.
+
+![](data:image/png;base64,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)
+
+그림을 보면 학습 횟수가 늘어나면서 손실 함수의 값이 줄어든다.
+이는 학습이 잘되고 있다는 뜻으로, 신경망의 가중치 매개변수가 서서히 데이터에 적응하고 있음을 의미한다.
+다시 말해 데이터를 반복해서 학습함으로써 최적 가중치 매개변수로 서서히 다가서고 있다.
+
+<br />
+
+## 시험 데이터로 평가하기
+
+위의 결과에서 학습을 반복함으로써 손실 함수의 값이 서서히 내려가는 것을 확인했다.
+이때의 손실 함수의 값이란, 정확히는 '훈련 데이터의 미니배치에 대한 손실 함수'의 값이다.
+훈련 데이터의 손실 함수 값이 작아지는 것은 신경망이 잘 학습하고 있다는 방증이지만, 이 결과만으로는 다른 데이터셋에도 비슷한 실력을 발휘할지 확실치 않다.
+
+신경망 학습에서는 오버피팅을 주의해야 한다.
+오버피팅되었다는 것은, 예를 들어 훈련 데이터에 포함된 이미지만 제대로 구분하고, 그렇지 않은 이미지는 식별할 수 없다는 뜻이다.
+
+신경망 학습의 원래 목표는 범용적인 능력을 익히는 것이다.
+이를 위해 다음 구현에서는 학습 도중 정기적으로 훈련 데이터와 시험 데이터를 대상으로 정확도를 기록한다.
+여기에서는 1에폭별로 훈련 데이터와 시험 데이터에 대한 정확도를 기록한다.
+
+> 에폭(epoch)은 하나의 단위이다. 1에폭은 학습에서 훈련 데이터를 모두 소진했을 때의 횟수에 해당한다.
+> 예컨대 훈련 데이터 10000개를 100개의 미니배치로 학습할 경우, 확률적 경사 하강법을 100회 반복하면 모든 훈련 데이터를 소진한 게 된다. 이 경우 100회가 1에폭이 된다.
+
+```python
+import sys, os
+
+sys.path.append(os.pardir)  # 부모 디렉터리의 파일을 가져올 수 있도록 설정
+import numpy as np
+import matplotlib.pyplot as plt
+from dataset.mnist import load_mnist
+from two_layer_net import TwoLayerNet
+
+# 데이터 읽기
+(x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
+
+network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
+
+# 하이퍼파라미터
+iters_num = 10000  # 반복 횟수를 적절히 설정한다.
+train_size = x_train.shape[0]
+batch_size = 100  # 미니배치 크기
+learning_rate = 0.1
+
+train_loss_list = []
+train_acc_list = []
+test_acc_list = []
+
+# 1에폭당 반복 수
+iter_per_epoch = max(train_size / batch_size, 1)
+
+for i in range(iters_num):
+    # 미니배치 획득
+    batch_mask = np.random.choice(train_size, batch_size)
+    x_batch = x_train[batch_mask]
+    t_batch = t_train[batch_mask]
+
+    # 기울기 계산
+    # grad = network.numerical_gradient(x_batch, t_batch)
+    grad = network.gradient(x_batch, t_batch)
+
+    # 매개변수 갱신
+    for key in ("W1", "b1", "W2", "b2"):
+        network.params[key] -= learning_rate * grad[key]
+
+    # 학습 경과 기록
+    loss = network.loss(x_batch, t_batch)
+    train_loss_list.append(loss)
+
+    # 1에폭당 정확도 계산
+    if i % iter_per_epoch == 0:
+        train_acc = network.accuracy(x_train, t_train)
+        test_acc = network.accuracy(x_test, t_test)
+        train_acc_list.append(train_acc)
+        test_acc_list.append(test_acc)
+        print("train acc, test acc | " + str(train_acc) + ", " + str(test_acc))
+```
+
+위의 코드에서는 1에폭마다 모든 훈련 데이터와 시험 데이터에 대한 정확도를 계산하고, 그 결과를 기록한다.
+정확도를 1에폭마다 계산하는 이유는 for문 안에서 매번 계산하기에는 시간이 오래 걸리고, 또 그렇게까지 자주 기록할 필요도 없기 때문이다.
+더 큰 관점에서 추이를 알 수 있으면 충분하다.
+
+그럼 앞의 코드로 얻은 그래프를 그려보자.
+
+![](https://velog.velcdn.com/images%2Fkyj93790%2Fpost%2F0e0df4e2-76ff-413e-87f1-93a31842cee1%2Fimage.png)
+
+그림에서는 훈련 데이터에 대한 정확도를 실선으로, 시험 데이터에 대한 정확도를 점선으로 그렸다.
+보다시피 에폭이 진행될수록(학습이 진행될수록) 훈련 데이터와 시험 데이터를 사용하고 평가한 정확도가 모두 좋아지고 있다.
+또, 두 정확도에는 차이가 없음을 알 수 있다.
+다시 말해 이번 학습에서는 오버피팅이 일어나지 않았다.
+
+> 만약 오버피팅이 일어나면 이 모습은 어떻게 달라질까?
+> 오버피팅되면 훈련 데이터와는 다른 데이터를 보면 잘못된 판단을 하기 시작한다.
+> 어느 순간부터 시험 데이터에 대한 정확도가 점차 떨어지기 시작한다는 뜻이다.
+> 이 순간이 오버피팅이 시작되는 순간으로, 이 순간을 포착해 학습을 중단하면 오버피팅을 효과적으로 예방할 수 있다.
+> 이 기법을 early stopping이라 하며, 나중에 살펴볼 '가중치 감소', '드롭아웃'과 함께 대표적인 오버피팅 예방법이다.
+
+<br />
+
+## 이번 장에서 배운 내용
+
+- 기계학습에서 사용하는 데이터셋은 훈련 데이터와 시험 데이터로 나눠 사용한다.
+- 훈련 데이터로 학습한 모델의 범용 능력을 시험 데이터로 평가한다.
+- 신경망 학습은 손실 함수를 지표로, 손실 함수의 값이 작아지는 방향으로 가중치 매개변수를 갱신한다.
+- 기준치 매개변수를 갱신할 때는 가중치 매개변수의 기울기를 이용하고, 기울어진 방향으로 가중치의 값을 갱신하는 작업을 반복한다.
+- 아주 작은 값을 주었을 때의 차분으로 미분하는 것을 수치 미분이라고 한다.
+- 수치 미분을 이용해 가중치 매개변수의 기울기를 구할 수 있다.
+- 수치 미분을 이용한 계산에는 시간이 걸리지만, 그 구현은 간단하다. 한편, 다음 장에서 구현하는 (다소 복잡한) 오차역전파법은 기울기를 고속으로 구할 수 있다.
