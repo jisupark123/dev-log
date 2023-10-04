@@ -1,0 +1,171 @@
+---
+title: 알고리즘 문제 풀이 - 백준 1194 달이 차오른다, 가자 with Python
+publishedAt: 2023-10-04
+description: 알고리즘 문제 풀이
+keywords: [알고리즘]
+---
+
+[문제 링크](https://www.acmicpc.net/problem/1194)
+
+<br />
+
+## 알고리즘
+
+- 그래프 이론
+- 그래프 탐색
+- 너비 우선 탐색
+- 비트마스킹
+
+<br />
+
+## 풀이 과정
+
+### [문제]
+
+너비 우선 탐색(bfs)으로 풀 수 있는 일반적인 미로 문제와 다른 몇 가지 까다로운 점이 있었다.
+
+1. key라는 변수가 존재하기 때문에 왔던 길을 되돌아가는 게 정답일 수도 있다.
+2. 그렇다면 같은 길을 왔다 갔다 무한 반복할 시 멈추게 하는 로직이 필요하다.
+
+<br />
+
+**f0.F..1**
+
+위의 예제에서는 왼쪽으로 갔다가 다시 오른쪽으로 가는 게 정답이다.
+이때는 출구(1)를 발견하는 즉시 프로그램을 종료하면 최단 거리를 찾을 수 있다.
+
+<br />
+**f0.F..#**
+
+하지만 위와 같이 정답이 없을 경우 f와 0사이를 무한 반복할 텐데 이를 적절히 멈춰서 -1을 출력해야 한다.
+
+<br />
+
+### [해결]
+
+보통의 방문 처리에는 각 인덱스에 방문했는지 여부만 boolean으로 저장했지만
+여기에서는 추가로 '직전 인덱스'를 저장했다.<br/>
+마치 벡터(↑→↓←) 정보를 저장하는 것인데, 이로써 같은 경로를 두 번 이상 반복 이동하는 것을 방지할 수 있다.
+
+<br />
+
+### [문제]
+
+**0....**<br />
+**.#B#A**<br />
+**.#.#.**<br />
+**b#a#1**
+
+아직 부족하다.
+위의 예제에서는 먼저 아래에 있는 b key를 획득하고 오른쪽으로 이동해야 한다.<br/>
+하지만 누군가 오른쪽으로 먼저 이동하고 방문 처리해버리면 b를 획득한 이후에 다시 못 지나간다.
+
+<br />
+
+### [해결]
+
+최단 경로로 가지 않고 굳이 돌아가는 이유는 key를 가져오기 위함이다.
+따라서 방문 처리에 '보유한 key 정보'를 추가로 포함시킨다.
+
+정리하면, 방문 처리를 위한 2차원 배열 visited의 각 인덱스는 '직전 인덱스 y, 직전 인덱스 x, 보유한 key' 정보를 리스트로 담고 있다.
+
+<br />
+
+### [문제]
+
+보유한 key 정보를 어떻게 저장해야 할까? (key 정보는 visited와 bfs queue 두 곳에 필요하다)
+
+만약 "abc" 같이 string 형식으로 저장할 경우, 새로운 키(d)가 들어왔을 때 abc += 1 이런 식으로 하면, 참조 문제 때문에 queue의 다른 곳도 같이 변경된다.
+
+<br />
+### [해결]
+
+one-hot-encoding처럼 보유한 key를 1, 보유하지 않은 key를 0으로 저장한다.
+
+만약 a와 d key를 가지고 있다면, 다음과 같이 표현한다. [1, 0, 0, 1, 0, 0, 0]
+
+key를 업데이트하거나 queue에 넣을 때는 리스트를 복사해서 참조 문제를 방지한다.
+
+## 전체 코드
+
+```python
+import sys
+from collections import deque
+
+
+input = sys.stdin.readline
+
+N, M = map(int, input().split())
+
+# 미로
+maze = [input().strip() for _ in range(N)]
+
+# 시작 위치 초기화
+start = (0, 0)
+
+for i in range(N):
+    for j in range(M):
+        if maze[i][j] == "0":
+            start = (i, j)
+            break
+
+dy = [1, 0, -1, 0]
+dx = [0, -1, 0, 1]
+
+queue = deque()
+
+# 시작 인덱스 y, 시작 인덱스 x, 열쇠모음, 이동 횟수
+queue.append((*start, [0, 0, 0, 0, 0, 0], 0))
+
+# [직전 인덱스 y, 직전 인덱스 x, 보유한 key(string)]
+visited = [[[] for _ in range(M)] for _ in range(N)]
+
+
+# bfs
+while queue:
+    # 시작인덱스 y, 시작인덱스 x, 열쇠모음, 이동 횟수
+    y, x, keys, move_cnt = queue.popleft()
+
+    # 출구 찾을 시 출력 후 프로그램 종료
+    if maze[y][x] == "1":
+        print(move_cnt)
+        exit(0)
+
+    # 4방향
+    for d in range(4):
+        ny, nx = y + dy[d], x + dx[d]
+
+        if (
+            # 인덱스 검사
+            0 <= ny < N
+            and 0 <= nx < M
+
+            # 방문 여부 검사
+            and (y, x, keys) not in visited[ny][nx]
+
+            # 벽
+            and maze[ny][nx] != "#"
+
+            # key가 필요한지 & 해당 key를 가지고 있는지
+            and (
+                maze[ny][nx] not in ("A", "B", "C", "D", "E", "F")
+                or keys[ord(maze[ny][nx]) - 65] == 1
+            )
+        ):
+            # key 리스트 복사
+            copy_keys = keys.copy()
+
+            # key 수집 (아스키코드 활용)
+            if maze[ny][nx] in ("a", "b", "c", "d", "e", "f"):
+                copy_keys[ord(maze[ny][nx]) - 97] = 1
+
+            # 방문 처리
+            visited[ny][nx].append((y, x, copy_keys))
+
+            # queue에 추가
+            queue.append((ny, nx, copy_keys, move_cnt + 1))
+
+# 출구 못 찾을 시 -1 출력
+print(-1)
+
+```
