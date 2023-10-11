@@ -1,0 +1,30 @@
+---
+title: 알고리즘 문제 풀이 - 백준 11004 K번째 수 with Python
+publishedAt: 2023-10-11
+description: 알고리즘 문제 풀이
+keywords: [알고리즘]
+---
+
+[문제 링크](https://www.acmicpc.net/problem/11004)
+
+<br />
+
+## 알고리즘
+
+- 정렬
+
+<br />
+
+## 풀이 과정
+
+입력받은 숫자들을 리스트에 저장하고 sort 메소드로 정렬한다.
+이후 k-1번째 원소를 출력하면 끝.
+
+## 전체 코드
+
+```python
+n, k = map(int, input().split())
+nums = list(map(int, input().split()))
+nums.sort()
+print(nums[k-1])
+```

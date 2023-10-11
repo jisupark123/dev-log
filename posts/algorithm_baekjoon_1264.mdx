@@ -1,0 +1,41 @@
+---
+title: 알고리즘 문제 풀이 - 백준 1264 모음의 개수 with Python
+publishedAt: 2023-10-11
+description: 알고리즘 문제 풀이
+keywords: [알고리즘]
+---
+
+[문제 링크](https://www.acmicpc.net/problem/1264)
+
+<br />
+
+## 알고리즘
+
+- 구현
+- 문자열
+
+<br />
+
+## 풀이 과정
+
+입력받은 문자열을 for문으로 돌면서 모음이랑 일치하는 글자의 개수를 구한다.
+단, 문자를 소문자로 변환한 후 비교한다.
+
+## 전체 코드
+
+```python
+import sys
+
+input = sys.stdin.readline
+target = ["a", "e", "i", "o", "u"]
+
+while True:
+    w = input().strip()
+    if w == "#":
+        break
+    res = 0
+    for s in w:
+        if s.lower() in target:
+            res += 1
+    print(res)
+```
