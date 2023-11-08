@@ -1,0 +1,316 @@
+---
+title: 알고리즘 문제 풀이 - 백준 23288 주사위 굴리기 2 with Python
+publishedAt: 2023-11-08
+description: 알고리즘 문제 풀이
+keywords: [알고리즘]
+---
+
+[문제 링크](https://www.acmicpc.net/problem/23288)
+
+<br />
+
+## 알고리즘
+
+>
+
+- 구현
+- 그래프 이론
+- 그래프 탐색
+- 시뮬레이션
+- 너비 우선 탐색
+
+<br />
+
+## 풀이 과정
+
+![](data:image/png;base64,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)
+
+이 문제를 풀기 위해 구현해야 하는 것
+
+1. 주사위 굴리기
+2. 주사위 방향 전환 - 시계 방향 회전, 반시계 방향 회전, 반바퀴 회전
+3. 점수 구하기
+
+<br />
+### 주사위 Class
+
+구현을 위해 주사위 Class를 만들었다.
+주사위 Class에는 다음과 같은 정보들을 보관한다.
+
+- 주사위의 6면에 해당하는 숫자들 (1~6)
+- 주사위의 현재 이동 방향 (e-동, w-서, s-남, n-북)
+- 주사위의 현재 좌표 ([y, x])
+
+초기값은 문제에 주어진대로 세팅한다.
+
+```python
+class Dice:
+    def __init__(self) -> None:
+        self.left = 4
+        self.right = 3
+        self.front = 2
+        self.back = 5
+        self.bottom = 6
+        self.top = 1
+        self.direction = "e" # 동쪽
+        self.coordinate = [0, 0]  # y,x
+```
+
+<br />
+### 1. 주사위 굴리기
+
+먼저 주사위가 이동 방향으로 한칸 이동했을 때의 좌표를 구하는 메소드를 만들었다.
+저장된 direction과 coordinate로 다음 좌표 y,x를 반환한다.
+
+```python
+def get_next_coordinate(self):
+    dir_coor = {"e": (0, 1), "w": (0, -1), "n": (-1, 0), "s": (1, 0)}
+    return [self.coordinate[i] + dir_coor[self.direction][i] for i in range(2)] # [y, x]
+```
+
+이제 주사위를 굴리는 roll 메소드를 작성한다.
+주사위를 굴리면 6개의 면 중에 2개의 면은 그대로이고 4개의 면만 바뀐다.
+주사위를 굴렸을 때 바뀌는 면을 동서남북 각각의 방향에 대해 수정한다. 좌표도 같이 수정한다.
+
+```python
+def roll(self):  # 주사위 굴리기
+    self.coordinate = self.get_next_coordinate() # 다음 이동 장소로 좌표 수정
+    if self.direction == "e":  # 동
+        self.top, self.right, self.bottom, self.left = (self.left, self.top, self.right, self.bottom)
+    elif self.direction == "w":  # 서
+        self.top, self.left, self.bottom, self.right = (self.right, self.top, self.left, self.bottom)
+    elif self.direction == "s":  # 남
+        self.top, self.back, self.bottom, self.front = (self.front, self.top, self.back, self.bottom)
+    else:  # 북
+        self.top, self.front, self.bottom, self.back = (self.back, self.top, self.front, self.bottom)
+```
+
+<br />
+### 2. 주사위 방향 전환 - 시계 방향 회전, 반시계 방향 회전, 반바퀴 회전
+
+현재 방향에 따라 if문으로 각각 바꿔줬다.
+
+```python
+def rotate_right(self):  # 시계 방향 회전
+    if self.direction == "e":
+        self.direction = "s"
+    elif self.direction == "s":
+        self.direction = "w"
+    elif self.direction == "w":
+        self.direction = "n"
+    else:
+        self.direction = "e"
+
+def rotate_left(self):  # 반시계 방향 회전
+    if self.direction == "e":
+        self.direction = "n"
+    elif self.direction == "n":
+        self.direction = "w"
+    elif self.direction == "w":
+        self.direction = "s"
+    else:
+        self.direction = "e"
+
+def rotate_opposite(self):  # 반바퀴 회전 (시계 방향으로 두 번 회전)
+    self.rotate_right()
+    self.rotate_right()
+
+```
+
+<br />
+
+### 3. 점수 구하기
+
+```python
+# 문제 입력 받기
+import sys
+from collections import deque
+
+input = sys.stdin.readline
+
+N, M, K = map(int, input().split())
+board = [list(map(int, input().split())) for _ in range(N)]
+```
+
+큐를 활용한 bfs로 구현했다.
+
+get_score(i, j) 함수는 주사위가 이동했을 때의 i,j 좌표를 받아서 점수를 반환한다.
+
+```python
+dy = [1, 0, -1, 0]
+dx = [0, -1, 0, 1]
+
+
+def get_score(i, j):
+    cnt = 1
+    visited = [[0 for _ in range(M)] for _ in range(N)]
+    visited[i][j] = 1
+    queue = deque([(i, j)])
+    while queue:
+        y, x = queue.popleft()
+        for a in range(4):
+            ny, nx = y + dy[a], x + dx[a]
+            if (
+                0 <= ny < N
+                and 0 <= nx < M
+                and board[ny][nx] == board[i][j]
+                and visited[ny][nx] == 0
+            ):
+                cnt += 1
+                visited[ny][nx] = 1
+                queue.append((ny, nx))
+
+    return cnt
+```
+
+### 구현부
+
+위 3개를 해결했다면 문제에서 주어진대로 코드를 작성하면 된다.
+
+```python
+dice = Dice()
+score = 0
+for _ in range(K):
+    # 1. 주사위가 이동 방향으로 한 칸 굴러간다. 만약, 이동 방향에 칸이 없다면, 이동 방향을 반대로 한 다음 한 칸 굴러간다.
+    ny, nx = dice.get_next_coordinate()
+    if not (0 <= ny < N and 0 <= nx < M):
+        dice.rotate_opposite()
+    dice.roll()
+
+    # 2. 주사위가 도착한 칸 (x, y)에 대한 점수를 획득한다.
+    y, x = dice.coordinate
+    score += board[y][x] * get_score(y, x)
+
+    # 3. 주사위의 아랫면에 있는 정수 A와 주사위가 있는 칸 (x, y)에 있는 정수 B를 비교해 이동 방향을 결정한다
+    # A > B인 경우 이동 방향을 90도 시계 방향으로 회전시킨다.
+    # A < B인 경우 이동 방향을 90도 반시계 방향으로 회전시킨다.
+    # A = B인 경우 이동 방향에 변화는 없다.
+    A = dice.bottom
+    B = board[y][x]
+    if A > B:
+        dice.rotate_right()
+    elif A < B:
+        dice.rotate_left()
+
+print(score) # 점수 출력
+```
+
+<br />
+
+## 전체 코드
+
+```python
+import sys
+from collections import deque
+
+
+class Dice:
+    def __init__(self) -> None:
+        self.left = 4
+        self.right = 3
+        self.front = 2
+        self.back = 5
+        self.bottom = 6
+        self.top = 1
+        self.direction = "e"
+        self.coordinate = [0, 0]  # y,x
+
+    def get_next_coordinate(self):
+        dir_coor = {"e": (0, 1), "w": (0, -1), "n": (-1, 0), "s": (1, 0)}
+        return [self.coordinate[i] + dir_coor[self.direction][i] for i in range(2)]
+
+    def roll(self):  # 주사위 굴리기
+        self.coordinate = self.get_next_coordinate() # 다음 이동 장소로 좌표 수정
+
+        if self.direction == "e":  # 동
+            self.top, self.right, self.bottom, self.left = (self.left, self.top, self.right, self.bottom)
+        elif self.direction == "w":  # 서
+            self.top, self.left, self.bottom, self.right = (self.right, self.top, self.left, self.bottom)
+        elif self.direction == "s":  # 남
+            self.top, self.back, self.bottom, self.front = (self.front, self.top, self.back, self.bottom)
+        else:  # 북
+            self.top, self.front, self.bottom, self.back = (self.back, self.top, self.front, self.bottom)
+
+    def rotate_right(self):  # 시계 방향 회전
+        if self.direction == "e":
+            self.direction = "s"
+        elif self.direction == "s":
+            self.direction = "w"
+        elif self.direction == "w":
+            self.direction = "n"
+        else:
+            self.direction = "e"
+
+    def rotate_left(self):  # 반시계 방향 회전
+        if self.direction == "e":
+            self.direction = "n"
+        elif self.direction == "n":
+            self.direction = "w"
+        elif self.direction == "w":
+            self.direction = "s"
+        else:
+            self.direction = "e"
+
+    def rotate_opposite(self):  # 반바퀴 회전
+        self.rotate_left()
+        self.rotate_left()
+
+
+dy = [1, 0, -1, 0]
+dx = [0, -1, 0, 1]
+
+# 점수 구하기
+def get_score(i, j):
+    cnt = 1
+    visited = [[0 for _ in range(M)] for _ in range(N)]
+    visited[i][j] = 1
+    queue = deque([(i, j)])
+    while queue:
+        y, x = queue.popleft()
+        for a in range(4):
+            ny, nx = y + dy[a], x + dx[a]
+            if (
+                0 <= ny < N
+                and 0 <= nx < M
+                and board[ny][nx] == board[i][j]
+                and visited[ny][nx] == 0
+            ):
+                cnt += 1
+                visited[ny][nx] = 1
+                queue.append((ny, nx))
+
+    return cnt
+
+
+input = sys.stdin.readline
+
+N, M, K = map(int, input().split())
+board = [list(map(int, input().split())) for _ in range(N)]
+
+dice = Dice()
+score = 0
+for _ in range(K):
+    # 1. 주사위가 이동 방향으로 한 칸 굴러간다. 만약, 이동 방향에 칸이 없다면, 이동 방향을 반대로 한 다음 한 칸 굴러간다.
+    ny, nx = dice.get_next_coordinate()
+    if not (0 <= ny < N and 0 <= nx < M):
+        dice.rotate_opposite()
+    dice.roll()
+
+    # 2. 주사위가 도착한 칸 (x, y)에 대한 점수를 획득한다.
+    y, x = dice.coordinate
+    score += board[y][x] * get_score(y, x)
+
+    # 3. 주사위의 아랫면에 있는 정수 A와 주사위가 있는 칸 (x, y)에 있는 정수 B를 비교해 이동 방향을 결정한다
+    # A > B인 경우 이동 방향을 90도 시계 방향으로 회전시킨다.
+    # A < B인 경우 이동 방향을 90도 반시계 방향으로 회전시킨다.
+    # A = B인 경우 이동 방향에 변화는 없다.
+    A = dice.bottom
+    B = board[y][x]
+    if A > B:
+        dice.rotate_right()
+    elif A < B:
+        dice.rotate_left()
+
+print(score)
+
+```

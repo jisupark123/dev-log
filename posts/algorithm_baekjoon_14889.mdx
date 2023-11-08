@@ -1,0 +1,84 @@
+---
+title: 알고리즘 문제 풀이 - 백준 14889 스타트와 링크 with Python
+publishedAt: 2023-11-08
+description: 알고리즘 문제 풀이
+keywords: [알고리즘]
+---
+
+[문제 링크](https://www.acmicpc.net/problem/14889)
+
+<br />
+
+## 알고리즘
+
+>
+
+- 브루트포스
+- 백트래킹
+
+<br />
+
+## 풀이 과정
+
+1. itertools 라이브러리에서 제공하는 combinations 함수로 팀을 나누는 조합을 모두 구한다.
+2. 각각의 조합마다 두 팀의 능력치 차이를 계산하고 그 중 최소가 되는 값을 구한다.
+
+조합을 구하는 코드는 다음과 같다.
+
+```python
+# 1 ~ N의 숫자 중에서 N//2 개의 조합을 모두 생성
+# ex. combinations(range(3), 2) -> [(0, 1), (0, 2), (1, 2)]
+combies = list(combinations(range(N), N // 2))
+```
+
+<br />
+combies를 for문으로 반복하면 group1은 자연스럽게 각각의 combi가 된다. 그리고 group2는 전체에서 group1을 뺀 차집합으로 구한다.
+
+```python
+for combi in combies[: len(combies) // 2]:
+    group1 = combi # (0, 1)
+    group2 = tuple(set(range(N)) - set(group1)) # (2, 3)
+```
+
+<br />
+이제 각 Group의 능력치를 구하고 이전에 구한 최솟값을 업데이트하면 끝이다.
+
+```python
+# group1의 능력치
+power1 = sum([sum([S[group1[a]][group1[b]] + S[group1[b]][group1[a]] for b in range(len(combi))]) for a in range(len(combi))])
+
+# group2의 능력치
+power2 = sum([sum([S[group2[a]][group2[b]] + S[group2[b]][group2[a]] for b in range(len(combi))]) for a in range(len(combi))])
+
+# 결과값 업데이트
+res = min(res, abs(power1 - power2) // 2)
+```
+
+<br />
+
+## 전체 코드
+
+```python
+import sys
+from itertools import combinations
+
+input = sys.stdin.readline
+
+N = int(input())
+S = [list(map(int, input().split())) for _ in range(N)]
+
+res = 1e9
+combies = list(combinations(range(N), N // 2))
+
+for combi in combies[: len(combies) // 2]:
+    group1 = combi
+    group2 = tuple(set(range(N)) - set(group1))
+
+    power1 = sum([sum([S[group1[a]][group1[b]] + S[group1[b]][group1[a]] for b in range(len(combi))]) for a in range(len(combi))])
+    power2 = sum([sum([S[group2[a]][group2[b]] + S[group2[b]][group2[a]] for b in range(len(combi))]) for a in range(len(combi))])
+
+    res = min(res, abs(power1 - power2) // 2)
+
+print(res)
+
+```
