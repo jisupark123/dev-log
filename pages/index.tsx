@@ -6,6 +6,7 @@ import Page404 from './404';
 import PostBox, { PostInfoType } from '@/components/index/postBox';
 import Pagination, { PaginationProps } from '@/components/index/pagination';
 import Link from 'next/link';
+import GithubIcon from '../assets/svg/github-mark.svg';
 
 interface Props {
   posts: PostInfoType[];
@@ -18,6 +19,11 @@ export default function Home({ posts, pagination }: Props) {
   ) : (
     <>
       <div className='px-16 w-full'>
+        <div>
+          <Link href={'https://github.com/jisupark123'}>
+            <GithubIcon />
+          </Link>
+        </div>
         <div className='flex flex-col items-center gap-10 w-full '>
           {posts.map((post) => (
             <PostBox key={post.path} {...post} />
