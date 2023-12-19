@@ -19,11 +19,7 @@ export default function Home({ posts, pagination }: Props) {
   ) : (
     <>
       <div className='px-16 w-full'>
-        <div>
-          <Link href={'https://github.com/jisupark123'}>
-            <GithubIcon />
-          </Link>
-        </div>
+        
         <div className='flex flex-col items-center gap-10 w-full '>
           {posts.map((post) => (
             <PostBox key={post.path} {...post} />
