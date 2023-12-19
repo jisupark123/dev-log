@@ -1,0 +1,206 @@
+---
+title: SKT FLY AI 1일차
+publishedAt: 2023-12-19
+description: SKT FLY AI 1일차 정리 - 크롤링
+keywords: [크롤링]
+---
+
+## 1주차 수업 내용
+
+> - 오리엔테이션
+> - 크롤링
+
+<br />
+
+## 한 줄 소감
+
+오리엔테이션에서 자기소개할 때 보니 명문대, 석사 등등 엘리트 분들이 정말 많았다.
+앞으로 정말 열심히 해야겠다고 생각했다.
+
+수업은 첫 주차라 그런지 기초적인 부분을 다뤄서 딱히 어려운 부분은 없었다.
+
+<br />
+
+## 크롤링
+
+### 로또 홈페이지에서 당첨 번호 수집
+
+```python
+import requests as rq
+from bs4 import BeautifulSoup
+
+res = rq.get('https://dhlottery.co.kr/common.do?method=main')
+soup = BeautifulSoup(res.content, 'html.parser')
+result = soup.select('.ball_645')
+
+for num in result:
+print(num.text, end='번 ')
+
+# 12번 16번 21번 24번 41번 43번 15번
+```
+
+<br />
+
+### 네이버 뉴스 크롤링
+
+뉴스 컨텐츠는 태그가 정형화되어 있기 때문에 라이브러리를 사용하면 쉽게 크롤링할 수 있다.
+
+```python
+!pip install newspaper3k
+```
+
+```python
+import newspaper
+
+link = 'https://n.news.naver.com/article/052/0001974055?cds=news_media_pc'
+article = newspaper.Article(link, language='ko')
+article.download()
+article.parse()
+print(article.text)
+
+'''
+■ 진행 : 오동건 앵커
+■ 출연 : 김동엽 북한대학원대학교 교수
+
+* 아래 텍스트는 실제 방송 내용과 차이가 있을 수 있으니 보다 정확한 내용은 방송으로 확인하시기 바랍니다. 인용 시 [YTN 뉴스라이브] 명시해주시기 바랍니다.
+
+◇앵커> 어제 쏜 미사일, 570km를 날아가서 동해 상에 떨어진 것으로 지금 합참이 확인했는데 그러면 연결해서 어제 쏜 미사일도 SRBM 정도로 추정되고 있는데 연결해서 보면 어떤 메시지가 있다고 보십니까?
+◆김동엽> 저는 참 재미있다고 봐요. 물론 과거에 단거리와 ICBM을 같이 쏜 것은 처음은 아닙니다. 몇 차례가 있었지만 이번 같은 경우에는 조금 의미가 있지 않을까라고 생각이 됩니다. 어젯밤 단거리 발사 직후에 북한이 국방성 대변인 담화를 발표했습니다.
+그래서 단거리 570km 날아간 다음에 떨어지고 난 다음에 국방성 대변인이 바로 2차 NCG라고 한미 핵협상그룹 회의를 비난하면서 올 한해 동안 미 전략폭격기라든가 또 핵잠수함 미주리호가 부산에 입항한 이런 미 전략자산들이 한반도에 활동한 것을 대단히 비난을 했었거든요.
+<생략>
+'''
+```
+
+<br />
+
+### 웹툰 이미지 다운로드
+
+크롤링 차단을 우회하기 위해 header 값을 임의로 추가한다.
+
+```python
+import os
+
+url = 'https://comic.naver.com/webtoon/detail.nhn?titleId=747961&no=2'
+html = rq.get(url).text
+soup = BeautifulSoup(html, 'html.parser')
+
+# webtoon 폴더가 없다면 생성
+if not(os.path.isdir('./webtoon')):
+    os.mkdir(os.path.join('./webtoon'))
+
+for i, tag in enumerate(soup.select('.wt_viewer img'), 1):
+    img_url = tag['src']
+    save_img = './webtoon/' + str(i).zfill(3) + img_url[-4:]
+    print(save_img + ' :OK')
+    headers = {'Referer': img_url} # 일반 사용자인 것처럼 속이기 (중요!)
+
+    # 실제 이미지 데이터 불러오기
+    img_data = rq.get(img_url, headers=headers).content
+
+    # 이미지 파일 저장
+    with open(save_img, 'wb') as f:
+        f.write(img_data)
+```
+
+<br />
+
+### Selenium으로 Naver 로그인
+
+```python
+# 크롬 드라이버 설치
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+```
+
+Selenium으로 Element 선택 후 send_keys로 값을 전송한다.
+
+```python
+import time
+
+driver.get('https://nid.naver.com/nidlogin.login?mode=form&url=https%3A%2F%2Fwww.naver.com')
+time.sleep(1)
+
+id = driver.find_element('id', 'id')
+id.send_keys('네이버 아이디')
+
+pw = driver.find_element('id', 'pw')
+pw.send_keys('네이버 비밀번호')
+time.sleep(1)
+
+btn = driver.find_element('id', 'log.login')
+btn.click() # 로봇 검사 때문에 안됨
+```
+
+위의 코드는 네이버 로봇 검사 때문에 안된다.
+하지만 pyperclip 라이브러리를 통해 복사/붙여넣기로 값을 집어넣으면 검사를 우회할 수 있다.
+
+```python
+import pyperclip
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+
+driver.get('https://nid.naver.com/nidlogin.login?mode=form&url=https%3A%2F%2Fwww.naver.com')
+time.sleep(1)
+
+id = driver.find_element('id', 'id')
+pyperclip.copy('네이버 아이디')
+id.send_keys(Keys.COMMAND + 'v') # cmd + v 로 붙여넣기
+
+pw = driver.find_element('id', 'pw')
+pyperclip.copy('네이버 비밀번호')
+pw.send_keys(Keys.COMMAND + 'v') # cmd + v 로 붙여넣기
+time.sleep(1)
+
+btn = driver.find_element(By.ID, 'log.login')
+btn.click() # 로봇 검사 우회 성공
+```
+
+<br />
+
+### 과제 - 네이버쇼핑에서 검색어 입력 후 제품 이미지 다운로드하기
+
+```python
+product_name = '아이폰' # 검색어
+
+driver.get('https://shopping.naver.com/home')
+search_input = driver.find_element(By.XPATH, '//*[@id="gnb-gnb"]/div[2]/div/div[2]/div/div[2]/form/div[1]/div/input')
+search_input.send_keys(product_name) # 검색어 입력
+
+search_btn = driver.find_element(By.XPATH, '//*[@id="gnb-gnb"]/div[2]/div/div[2]/div/div[2]/form/div[1]/div/button[2]')
+search_btn.click() # 검색어 버튼 클릭
+
+
+soup = BeautifulSoup(driver.page_source, 'html.parser')
+wrapper = soup.select_one('.basicList_list_basis__uNBZx div')
+
+product_cnt = 10 # 크롤링할 제품 개수
+
+# product 폴더가 없다면 생성
+if not(os.path.isdir('./product')):
+    os.mkdir(os.path.join('./product'))
+
+try:
+    for i, item in enumerate(wrapper.children, 1):
+        img_tag = item.select_one('img')
+        img_url = img_tag['src']
+        img_extend = 'jpg' if 'jpg' in img_url else 'png' # 확장자
+        file_name = f'./product/{product_name}_{str(i).zfill(3)}.{img_extend}' # 저장할 파일명
+
+        headers = {'Referer': img_url} # 일반 사용자인 것처럼 속이기
+
+        # 실제 이미지 데이터 불러오기
+        img_data = rq.get(img_url, headers=headers).content
+
+        # 이미지 파일 저장
+        with open(file_name, 'wb') as f:
+            f.write(img_data)
+
+except Exception as e:
+    print(e)
+```
