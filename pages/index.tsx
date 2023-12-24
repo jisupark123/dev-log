@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { allPosts } from '@/.contentlayer/generated';
 import { GetServerSideProps, GetServerSidePropsContext, GetStaticPaths } from 'next';
+import isHotKey from 'is-hotkey';
 import Page404 from './404';
 
 import PostBox, { PostInfoType } from '@/components/index/postBox';
 import Pagination, { PaginationProps } from '@/components/index/pagination';
 import Link from 'next/link';
 import GithubIcon from '../assets/svg/github-mark.svg';
+import { useRouter } from 'next/router';
 
 interface Props {
   posts: PostInfoType[];
@@ -14,12 +16,19 @@ interface Props {
 }
 
 export default function Home({ posts, pagination }: Props) {
+  const router = useRouter();
+  useEffect(() => {
+    document.addEventListener('keydown', (event) => {
+      if (isHotKey('mod+/', event)) {
+        router.push('/potion');
+      }
+    });
+  });
   return !posts.length ? (
     <Page404 />
   ) : (
     <>
-      <div className='px-16 w-full'>
-        
+      <div className='px-16 w-full' onKeyDown={(event) => console.log(event)}>
         <div className='flex flex-col items-center gap-10 w-full '>
           {posts.map((post) => (
             <PostBox key={post.path} {...post} />
