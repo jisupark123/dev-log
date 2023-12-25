@@ -1,1 +1,1 @@
-export const POTION_KEY = 'potion';
+export const POTION_PASSWORD_KEY = 'potion';
