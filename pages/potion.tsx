@@ -9,7 +9,6 @@ export default function Potion() {
   useEffect(() => {
     const input = prompt('향기로운 마법을 일으키는 바람의 속삭임');
     const potionPassword = process.env.NEXT_PUBLIC_POTION_PASSWORD;
-    console.log(input, potionPassword);
     if (input == potionPassword) {
       localStorage.setItem(POTION_PASSWORD_KEY, potionPassword);
       setAdmin(true);
