@@ -17,7 +17,11 @@
 }
 
 body {
-  color: #000000;
+  @apply bg-page1 text-black;
+}
+
+input {
+  all: unset;
 }
 
 * {

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React, { useEffect } from 'react';
-import Sun from '../assets/svg/sun.svg';
+import Sun from '../assets/icons/sun.svg';
 import useUser from '@/recoil/user/useUser';
 import { POTION_PASSWORD_KEY } from '@/constants/localStorage';
 import { useRouter } from 'next/router';

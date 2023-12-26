@@ -10,6 +10,7 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  mode: 'jit',
   theme: {
     extend: {
       fontFamily: {
@@ -24,6 +25,8 @@ module.exports = {
         page2: '#E2E2EF',
         element1: '#FFFFFF',
         blue: '#6B7AF7',
+        indigo: '#6610f2',
+        danger: '#E60F6C',
         lightGray: '#C1C1C1',
       },
       borderWidth: px0_10,

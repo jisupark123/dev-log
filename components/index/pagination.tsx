@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { cls } from '@/lib/client/utils';
-import ChevronLeft from '../../assets/svg/chevron_left.svg';
-import ChevronRight from '../../assets/svg/chevron_right.svg';
+import ChevronLeft from '../../assets/icons/chevron_left.svg';
+import ChevronRight from '../../assets/icons/chevron_right.svg';
 import styles from './pagination.module.css';
 
 export type PaginationProps = {
