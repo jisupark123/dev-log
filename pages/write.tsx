@@ -102,8 +102,7 @@ export default function Write() {
                 }
               }
             }}
-            onDoubleClick={console.log}
-            className='w-full h-full outline-none'
+            className='w-full h-full outline-none prose'
           ></Editable>
         </Slate>
       </div>

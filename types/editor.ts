@@ -1,7 +1,6 @@
 import { BaseEditor } from 'slate';
 import { HistoryEditor } from 'slate-history';
 import { ReactEditor } from 'slate-react';
-import { CustomText, EmptyText } from './slate_custom_types';
 
 export type TEditor = BaseEditor & ReactEditor & HistoryEditor;
 export type TMarkBtnFormat = 'bold' | 'italic' | 'strikethrough' | 'underline' | 'code';
@@ -16,5 +15,7 @@ export type TBlockBtnFormat =
   | 'image'
   | 'youtube'
   | 'code-block'
-  | 'hbar';
+  | 'hbar'
+  | 'list-item'
+  | 'paragraph';
 export type TPluginBtnFormat = 'spell-check';

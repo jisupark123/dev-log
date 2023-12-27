@@ -28,7 +28,7 @@ export default function Home({ posts, pagination }: Props) {
     <Page404 />
   ) : (
     <>
-      <div className='px-16 w-full' onKeyDown={(event) => console.log(event)}>
+      <div className='px-16 w-full' >
         <div className='flex flex-col items-center gap-10 w-full '>
           {posts.map((post) => (
             <PostBox key={post.path} {...post} />

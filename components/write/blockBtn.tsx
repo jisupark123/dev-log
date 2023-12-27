@@ -1,8 +1,9 @@
-import { isMarkActive } from '@/lib/client/write/isMarkActive';
 import { toggleMark } from '@/lib/client/write/toggleMark';
 import { TBlockBtnFormat } from '@/types/editor';
 import { useSlate } from 'slate-react';
 import BaseBtn from './baseBtn';
+import isBlockActive from '@/lib/client/write/isBlockActive';
+import toggleBlock from '@/lib/client/write/toggleBlock';
 
 // bold, italic, underline, strikeThrough
 export default function BlockBtn({
@@ -13,11 +14,11 @@ export default function BlockBtn({
   return (
     <BaseBtn
       {...props}
-      active={false}
+      active={isBlockActive(editor, format)}
       format={format}
       onMouseDown={(event) => {
         event.preventDefault();
-        toggleMark(editor, format);
+        toggleBlock(editor, format);
       }}
     />
   );

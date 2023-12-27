@@ -22,6 +22,9 @@ export default function SlateLeaf({
   if (leaf.underline) {
     children = <u>{children}</u>;
   }
+  if (leaf.strikethrough) {
+    children = <del>{children}</del>;
+  }
 
   return <span {...attributes}>{children}</span>;
 }

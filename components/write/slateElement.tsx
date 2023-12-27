@@ -6,6 +6,7 @@ type TSlateElement = {
 
 export default function SlateElement({ attributes, children, element }: TSlateElement) {
   const style = { textAlign: element.align };
+  console.log('element', element);
   switch (element.type) {
     case 'block-quote':
       return (
@@ -20,6 +21,7 @@ export default function SlateElement({ attributes, children, element }: TSlateEl
         </ul>
       );
     case 'heading-one':
+      console.log('heading-one');
       return (
         <h1 style={style} {...attributes}>
           {children}
