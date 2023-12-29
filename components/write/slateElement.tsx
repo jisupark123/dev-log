@@ -6,14 +6,7 @@ type TSlateElement = {
 
 export default function SlateElement({ attributes, children, element }: TSlateElement) {
   const style = { textAlign: element.align };
-  console.log('element', element);
   switch (element.type) {
-    case 'block-quote':
-      return (
-        <blockquote style={style} {...attributes}>
-          {children}
-        </blockquote>
-      );
     case 'bulleted-list':
       return (
         <ul style={style} {...attributes}>
@@ -21,7 +14,6 @@ export default function SlateElement({ attributes, children, element }: TSlateEl
         </ul>
       );
     case 'heading-one':
-      console.log('heading-one');
       return (
         <h1 style={style} {...attributes}>
           {children}
@@ -32,6 +24,12 @@ export default function SlateElement({ attributes, children, element }: TSlateEl
         <h2 style={style} {...attributes}>
           {children}
         </h2>
+      );
+    case 'heading-three':
+      return (
+        <h3 style={style} {...attributes}>
+          {children}
+        </h3>
       );
     case 'list-item':
       return (
@@ -44,6 +42,29 @@ export default function SlateElement({ attributes, children, element }: TSlateEl
         <ol style={style} {...attributes}>
           {children}
         </ol>
+      );
+    case 'code-block':
+      return (
+        <div data-rehype-pretty-code-fragment>
+          <pre data-language='python' data-theme='default' style={style} {...attributes}>
+            <code data-language='python' data-theme='default'>
+              {children}
+            </code>
+          </pre>
+        </div>
+      );
+    case 'block-quote':
+      return (
+        <blockquote style={style} {...attributes}>
+          {children}
+        </blockquote>
+      );
+    case 'hbar':
+      return (
+        <p>
+          <hr style={style} {...attributes} />
+          {children}
+        </p>
       );
     default:
       return (

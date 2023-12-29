@@ -13,6 +13,8 @@ import BlockBtn from '@/components/write/blockBtn';
 import MarkBtn from '@/components/write/markBtn';
 import PluginBtn from '@/components/write/pluginBtn';
 import Underline from '@/components/underline';
+import CodeBlockBtn from '@/components/write/codeBlockBtn';
+import ListBlockBtn from '@/components/write/listBlockBtn';
 
 const initialValue: Descendant[] = [
   {
@@ -71,11 +73,11 @@ export default function Write() {
             <MarkBtn format='strikethrough' className='mr-10' />
             <MarkBtn format='code' className='mr-20' />
             <div className='w-1 h-30 bg-page1 mr-20'></div>
-            <BlockBtn format='bulleted-list' className='mr-10' />
-            <BlockBtn format='numbered-list' className='mr-10' />
+            <ListBlockBtn format='bulleted-list' className='mr-10' />
+            <ListBlockBtn format='numbered-list' className='mr-10' />
             <BlockBtn format='image' className='mr-10' />
             <BlockBtn format='youtube' className='mr-10' />
-            <BlockBtn format='code-block' className='mr-10' />
+            <CodeBlockBtn format='code-block' className='mr-10' />
             <BlockBtn format='link' className='mr-10' />
             <BlockBtn format='block-quote' className='mr-10' />
             <BlockBtn format='hbar' />
@@ -102,7 +104,7 @@ export default function Write() {
                 }
               }
             }}
-            className='w-full h-full outline-none prose'
+            className='w-full h-1000 outline-none prose'
           ></Editable>
         </Slate>
       </div>

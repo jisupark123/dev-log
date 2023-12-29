@@ -1,0 +1,9 @@
+
+Transforms.unwrapNodes 
+- 부모 노드의 위치에서 노드의 Wrap을 풀고, 필요한 경우 부모 노드를 분할하여 범위에 있는 내용만 Wrap을 해제
+
+Transforms.wrapNodes
+- 새 Container 노드의 위치에서 노드를 감싸고, 먼저 범위의 가장자리를 분할하여 범위의 내용만 표시되도록 함
+
+Transforms.setNodes
+- 해당 위치의 노드에 새로운 속성을 설정
