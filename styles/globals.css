@@ -27,3 +27,8 @@ input {
 * {
   box-sizing: border-box;
 }
+
+/* 모달창 띄울 때 스크롤 방지 */
+.modal-open {
+  overflow: hidden;
+}

@@ -1,0 +1,16 @@
+export type TCodeLanguage =
+  | 'c'
+  | 'cpp'
+  | 'cs'
+  | 'css'
+  | 'dart'
+  | 'html'
+  | 'java'
+  | 'javascript'
+  | 'json'
+  | 'kotlin'
+  | 'markdown'
+  | 'python'
+  | 'sql'
+  | 'swift'
+  | 'typescript';

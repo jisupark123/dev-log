@@ -1,6 +1,7 @@
 import Layout from '@/components/layout';
 import '@/styles/globals.css';
 import '@/styles/utils.css';
+import '@/styles/github-dark-dimmed.css';
 import type { AppProps } from 'next/app';
 import localFont from '@next/font/local';
 import { RecoilRoot } from 'recoil';

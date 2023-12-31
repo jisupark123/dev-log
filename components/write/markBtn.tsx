@@ -1,6 +1,6 @@
 import { isMarkActive } from '@/lib/client/write/isMarkActive';
 import { toggleMark } from '@/lib/client/write/toggleMark';
-import { TMarkBtnFormat } from '@/types/editor';
+import { TMarkFormat } from '@/types/editor';
 import { useSlate } from 'slate-react';
 import BaseBtn from './baseBtn';
 
@@ -8,7 +8,7 @@ import BaseBtn from './baseBtn';
 export default function MarkBtn({
   format,
   ...props
-}: { format: TMarkBtnFormat } & React.HTMLAttributes<HTMLButtonElement>) {
+}: { format: TMarkFormat } & React.HTMLAttributes<HTMLButtonElement>) {
   const editor = useSlate();
   return (
     <BaseBtn

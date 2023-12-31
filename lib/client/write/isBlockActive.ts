@@ -1,8 +1,8 @@
-import { TBlockBtnFormat } from '@/types/editor';
+import { TBlockFormat } from '@/types/editor';
 import { CustomEditor, CustomElement } from '@/types/slate_custom_types';
 import { Editor, Element } from 'slate';
 
-export default function isBlockActive(editor: CustomEditor, format: TBlockBtnFormat, blockType = 'type') {
+export default function isBlockActive(editor: CustomEditor, format: TBlockFormat, blockType = 'type') {
   const { selection } = editor;
   if (!selection) return false;
 

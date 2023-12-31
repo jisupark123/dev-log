@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Descendant, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
@@ -9,17 +9,14 @@ import useUser from '@/recoil/user/useUser';
 import SlateElement from '@/components/write/slateElement';
 import SlateLeaf from '@/components/write/slateLeaf';
 import HOTKEYS from '@/constants/hotkeys';
-import BlockBtn from '@/components/write/blockBtn';
-import MarkBtn from '@/components/write/markBtn';
-import PluginBtn from '@/components/write/pluginBtn';
-import Underline from '@/components/underline';
-import CodeBlockBtn from '@/components/write/codeBlockBtn';
-import ListBlockBtn from '@/components/write/listBlockBtn';
+import { TPluginFormat } from '@/types/editor';
+import Preview from '@/components/write/plugins/preview';
+import Tools from '@/components/write/tools';
 
 const initialValue: Descendant[] = [
   {
     type: 'paragraph',
-    children: [{ text: '오늘의 이야기...' }],
+    children: [{ text: 'print("hi")' }],
   },
 ];
 
@@ -29,6 +26,9 @@ export default function Write() {
   const renderElement = useCallback((props: any) => <SlateElement {...props} />, []);
   const renderLeaf = useCallback((props: any) => <SlateLeaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const [editorValue, setEditorValue] = useState<Descendant[]>(initialValue);
+  const [activatedPlugin, setActivatedPlugin] = useState<TPluginFormat | null>(null);
+  const titleRef = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isAdmin) {
@@ -37,6 +37,15 @@ export default function Write() {
   }, [router, isAdmin]);
   return (
     <div className='p-40 mx-auto w-full min-h-[calc(100vh-124px)] max-w-[1024px] post-box'>
+      {/* 상단 버튼 */}
+      <div className='flex items-center justify-end gap-20'>
+        <button className='flex justify-center items-center px-20 py-8 text-16 text-blue font-bold rounded-4 border-1 border-blue'>
+          임시 저장
+        </button>
+        <button className='flex justify-center items-center px-20 py-8 text-16 text-white bg-blue font-bold rounded-4 border-1 border-blue'>
+          업로드
+        </button>
+      </div>
       {/* 제목 */}
       <input
         type='text'
@@ -45,6 +54,7 @@ export default function Write() {
         placeholder='제목을 입력하세요'
         className='w-full mb-50 p-20 text-48 font-bold box-border placeholder:text-page1'
         style={{ borderBottom: '1px solid #f0f0f5' }}
+        ref={titleRef}
       />
       {/* 태그 */}
       <input
@@ -57,55 +67,37 @@ export default function Write() {
       />
 
       <div className='flex flex-col items-start'>
-        <Slate editor={editor} initialValue={initialValue}>
-          {/* Tools */}
-          <div className='flex justify-center items-center bg-indigo font-bold text-white py-8 px-20 rounded-8 mb-20'>
-            Tools
-          </div>
-          <div className='flex items-center mb-30'>
-            <BlockBtn format='heading-one' className='mr-10' />
-            <BlockBtn format='heading-two' className='mr-10' />
-            <BlockBtn format='heading-three' className='mr-20' />
-            <div className='w-1 h-30 bg-page1 mr-20'></div>
-            <MarkBtn format='bold' className='mr-10' />
-            <MarkBtn format='italic' className='mr-10' />
-            <MarkBtn format='underline' className='mr-10' />
-            <MarkBtn format='strikethrough' className='mr-10' />
-            <MarkBtn format='code' className='mr-20' />
-            <div className='w-1 h-30 bg-page1 mr-20'></div>
-            <ListBlockBtn format='bulleted-list' className='mr-10' />
-            <ListBlockBtn format='numbered-list' className='mr-10' />
-            <BlockBtn format='image' className='mr-10' />
-            <BlockBtn format='youtube' className='mr-10' />
-            <CodeBlockBtn format='code-block' className='mr-10' />
-            <BlockBtn format='link' className='mr-10' />
-            <BlockBtn format='block-quote' className='mr-10' />
-            <BlockBtn format='hbar' />
-          </div>
-          {/* Plugins */}
-          <div className='flex justify-center items-center bg-danger font-bold text-white py-8 px-20 rounded-8 mb-20'>
-            Plugins
-          </div>
-          <div className='flex items-center mb-30'>
-            <PluginBtn format='spell-check' />
-          </div>
-          <Underline className='bg-page1 mb-30' />
-          <Editable
-            renderElement={renderElement}
-            renderLeaf={renderLeaf}
-            placeholder='오늘의 이야기...'
-            autoFocus
-            onKeyDown={(event) => {
-              for (const hotkey in HOTKEYS) {
-                if (isHotkey(hotkey, event as any)) {
-                  event.preventDefault();
-                  const mark = HOTKEYS[hotkey];
-                  toggleMark(editor, mark);
+        <Slate editor={editor} initialValue={editorValue} onChange={setEditorValue}>
+          <Tools activatedPlugin={activatedPlugin} setActivatedPlugin={setActivatedPlugin} />
+
+          {/* h-calc (Toolbar 위에 고정 시키기 위한 높이 설정) */}
+          {/* 전체 높이 - nav_bar - Toolbar(margin 포함) - box 아래 padding - 페이지 아래 padding - 추가 padding (위) */}
+          <div className=' overflow-y-scroll h-[calc(100vh-64px-60px-40px-30px-30px)] w-full'>
+            <Editable
+              renderElement={renderElement}
+              renderLeaf={renderLeaf}
+              placeholder='오늘의 이야기...'
+              autoFocus
+              onKeyDown={(event) => {
+                for (const hotkey in HOTKEYS) {
+                  if (isHotkey(hotkey, event as any)) {
+                    event.preventDefault();
+                    const mark = HOTKEYS[hotkey];
+                    toggleMark(editor, mark);
+                  }
                 }
-              }
-            }}
-            className='w-full h-1000 outline-none prose'
-          ></Editable>
+              }}
+              className='outline-none prose w-full max-w-full '
+            ></Editable>
+          </div>
+          {activatedPlugin === 'preview' && (
+            <Preview
+              title={titleRef.current?.value}
+              editorValue={editorValue}
+              closePreview={() => setActivatedPlugin(null)}
+              className='p-40 mx-auto w-full h-[calc(100vh-100px)] max-w-[1024px] overflow-y-scroll post-box prose'
+            />
+          )}
         </Slate>
       </div>
     </div>

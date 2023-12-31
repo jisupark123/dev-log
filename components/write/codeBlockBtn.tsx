@@ -1,4 +1,4 @@
-import { TBlockBtnFormat } from '@/types/editor';
+import { TBlockFormat } from '@/types/editor';
 import { useSlate } from 'slate-react';
 import BaseBtn from './baseBtn';
 import isBlockActive from '@/lib/client/write/isBlockActive';
@@ -8,7 +8,7 @@ import toggleCodeBlock from '@/lib/client/write/toggleCodeBlock';
 export default function CodeBlockBtn({
   format,
   ...props
-}: { format: TBlockBtnFormat } & React.HTMLAttributes<HTMLButtonElement>) {
+}: { format: TBlockFormat } & React.HTMLAttributes<HTMLButtonElement>) {
   const editor = useSlate();
   return (
     <BaseBtn

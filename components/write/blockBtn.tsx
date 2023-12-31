@@ -1,5 +1,5 @@
 import { toggleMark } from '@/lib/client/write/toggleMark';
-import { TBlockBtnFormat } from '@/types/editor';
+import { TBlockFormat } from '@/types/editor';
 import { useSlate } from 'slate-react';
 import BaseBtn from './baseBtn';
 import isBlockActive from '@/lib/client/write/isBlockActive';
@@ -9,7 +9,7 @@ import toggleBlock from '@/lib/client/write/toggleBlock';
 export default function BlockBtn({
   format,
   ...props
-}: { format: TBlockBtnFormat } & React.HTMLAttributes<HTMLButtonElement>) {
+}: { format: TBlockFormat } & React.HTMLAttributes<HTMLButtonElement>) {
   const editor = useSlate();
   return (
     <BaseBtn

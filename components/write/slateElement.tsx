@@ -1,3 +1,5 @@
+import CodeBlock from './codeBlock';
+
 type TSlateElement = {
   attributes: React.HTMLAttributes<HTMLElement>;
   children: React.ReactNode;
@@ -45,13 +47,9 @@ export default function SlateElement({ attributes, children, element }: TSlateEl
       );
     case 'code-block':
       return (
-        <div data-rehype-pretty-code-fragment>
-          <pre data-language='python' data-theme='default' style={style} {...attributes}>
-            <code data-language='python' data-theme='default'>
-              {children}
-            </code>
-          </pre>
-        </div>
+        <CodeBlock element={element} textAlign={style.textAlign} {...attributes}>
+          {children}
+        </CodeBlock>
       );
     case 'block-quote':
       return (

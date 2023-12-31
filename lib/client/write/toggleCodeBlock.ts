@@ -1,10 +1,16 @@
-import { TBlockBtnFormat } from '@/types/editor';
-import { CustomEditor, CustomElement } from '@/types/slate_custom_types';
+import { LIST_TYPES, TBlockFormat, blockFormats } from '@/types/editor';
+import { CodeBlockElement, CustomEditor, CustomElement } from '@/types/slate_custom_types';
 import isBlockActive from './isBlockActive';
 import { Editor, Element, Transforms } from 'slate';
 
 const toggleCodeBlock = (editor: CustomEditor) => {
   const isActive = isBlockActive(editor, 'code-block');
+
+  // List 블록이면 따로 해제
+  Transforms.unwrapNodes(editor, {
+    match: (n) => !Editor.isEditor(n) && Element.isElement(n) && LIST_TYPES.includes(n.type),
+    split: true,
+  });
 
   if (isActive) {
     Transforms.unwrapNodes(editor, {
@@ -13,7 +19,12 @@ const toggleCodeBlock = (editor: CustomEditor) => {
     });
     Transforms.setNodes(editor, { type: 'paragraph' });
   } else {
-    Transforms.wrapNodes(editor, { type: 'code-block' as TBlockBtnFormat, children: [] } as CustomElement);
+    Transforms.setNodes(editor, { type: 'paragraph' });
+    Transforms.wrapNodes(editor, {
+      type: 'code-block' as TBlockFormat,
+      language: 'python',
+      children: [],
+    } as CodeBlockElement);
   }
 };
 

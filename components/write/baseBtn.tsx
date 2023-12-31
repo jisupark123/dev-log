@@ -18,7 +18,8 @@ import LinkIcon from '@/assets/icons/tool--link.svg';
 import BloackQuoteIcon from '@/assets/icons/tool--blockquote.svg';
 import HBarIcon from '@/assets/icons/tool--hbar.svg';
 import SpellCheckIcon from '@/assets/icons/plugin--spell_check.svg';
-import { TBlockBtnFormat, TMarkBtnFormat, TPluginBtnFormat } from '@/types/editor';
+import PreviewIcon from '@/assets/icons/plugin--preview.svg';
+import { TBlockFormat, TMarkFormat, TPluginFormat } from '@/types/editor';
 
 const icons: { [key: string]: any } = {
   'heading-one': <Heading1Icon width='16px' />,
@@ -38,6 +39,7 @@ const icons: { [key: string]: any } = {
   'block-quote': <BloackQuoteIcon width='20px' />,
   hbar: <HBarIcon width='16px' />,
   'spell-check': <SpellCheckIcon width='20px' />,
+  preview: <PreviewIcon width='20px' />,
 };
 
 export default function BaseBtn({
@@ -46,7 +48,7 @@ export default function BaseBtn({
   ...props
 }: {
   active: boolean;
-  format: TMarkBtnFormat | TBlockBtnFormat | TPluginBtnFormat;
+  format: TMarkFormat | TBlockFormat | TPluginFormat;
 } & React.HTMLAttributes<HTMLButtonElement>) {
   return (
     <button

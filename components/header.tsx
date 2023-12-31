@@ -15,7 +15,7 @@ export default function Header({}: Props) {
     setAdmin(potionPassword == process.env.NEXT_PUBLIC_POTION_PASSWORD);
   }, [setAdmin]);
   return (
-    <nav className={`fixed w-full h-64 bg-element1`}>
+    <nav className={`fixed w-full h-64 bg-element1 z-header`}>
       <div className='w-full h-full px-16 flex-between max-w-[1024px] lg:mx-auto lg:px-0'>
         <Link href={'/'} className='font-cf-star text-30'>
           개발 실록
