@@ -1,6 +1,6 @@
-import { TFormat } from '@/types/editor';
+import { TMarkFormat } from '@/types/editor';
 
-const HOTKEYS: { [key: string]: TFormat } = {
+const HOTKEYS: { [key: string]: TMarkFormat } = {
   'mod+b': 'bold',
   'mod+i': 'italic',
   'mod+u': 'underline',
