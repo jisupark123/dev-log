@@ -29,6 +29,8 @@ export type TCustomText = {
   text: string;
 };
 
+export const markFormats: TMarkFormat[] = ['bold', 'italic', 'strikethrough', 'underline', 'code'];
+
 export const blockFormats: TBlockFormat[] = [
   'heading-one',
   'heading-two',

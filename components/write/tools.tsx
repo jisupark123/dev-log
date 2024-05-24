@@ -4,6 +4,7 @@ import CodeBlockBtn from './codeBlockBtn';
 import ListBlockBtn from './listBlockBtn';
 import MarkBtn from './markBtn';
 import PluginBtn from './pluginBtn';
+import ImageBlockBtn from './imageBlockBtn';
 
 export default function Tools({
   activatedPlugin,
@@ -30,7 +31,7 @@ export default function Tools({
         <div className='w-1 h-30 bg-page1 mr-20'></div>
         <ListBlockBtn format='bulleted-list' className='mr-10' />
         <ListBlockBtn format='numbered-list' className='mr-10' />
-        <BlockBtn format='image' className='mr-10' />
+        <ImageBlockBtn format='image' className='mr-10' />
         <BlockBtn format='youtube' className='mr-10' />
         <CodeBlockBtn format='code-block' className='mr-10' />
         <BlockBtn format='link' className='mr-10' />

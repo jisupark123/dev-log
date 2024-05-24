@@ -6,7 +6,7 @@ import { Editor, Element, Transforms } from 'slate';
 const toggleBlock = (editor: CustomEditor, format: TBlockFormat) => {
   const isActive = isBlockActive(editor, format);
 
-  // List/Code 블록이면 따로 해제
+  // List/Code 블록이면 따로 해제 (서로 겹칠 수 없음)
   Transforms.unwrapNodes(editor, {
     match: (n) =>
       !Editor.isEditor(n) && Element.isElement(n) && (n.type === 'code-block' || LIST_TYPES.includes(n.type)),

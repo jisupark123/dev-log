@@ -1,7 +1,8 @@
-import { LIST_TYPES, TBlockFormat, blockFormats } from '@/types/editor';
+import { LIST_TYPES, TBlockFormat, blockFormats, markFormats } from '@/types/editor';
 import { CodeBlockElement, CustomEditor, CustomElement } from '@/types/slate_custom_types';
 import isBlockActive from './isBlockActive';
 import { Editor, Element, Transforms } from 'slate';
+import { isMarkActive } from './isMarkActive';
 
 const toggleCodeBlock = (editor: CustomEditor) => {
   const isActive = isBlockActive(editor, 'code-block');
@@ -19,6 +20,11 @@ const toggleCodeBlock = (editor: CustomEditor) => {
     });
     Transforms.setNodes(editor, { type: 'paragraph' });
   } else {
+    // markFormats.forEach((format) => {
+    //   if (isMarkActive(editor, format)) {
+    //     Editor.removeMark(editor, format);
+    //   }
+    // });
     Transforms.setNodes(editor, { type: 'paragraph' });
     Transforms.wrapNodes(editor, {
       type: 'code-block' as TBlockFormat,

@@ -1,4 +1,5 @@
 import CodeBlock from './codeBlock';
+import ImageBlock from './imageBlock';
 
 type TSlateElement = {
   attributes: React.HTMLAttributes<HTMLElement>;
@@ -63,6 +64,12 @@ export default function SlateElement({ attributes, children, element }: TSlateEl
           <hr style={style} {...attributes} />
           {children}
         </p>
+      );
+    case 'image':
+      return (
+        <ImageBlock element={element} textAlign={style.textAlign} {...attributes}>
+          {children}
+        </ImageBlock>
       );
     default:
       return (

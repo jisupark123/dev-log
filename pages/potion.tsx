@@ -7,7 +7,7 @@ export default function Potion() {
   const router = useRouter();
   const { setAdmin } = useUser();
   useEffect(() => {
-    const input = prompt('향기로운 마법을 일으키는 바람의 속삭임');
+    const input = prompt('PW');
     const potionPassword = process.env.NEXT_PUBLIC_POTION_PASSWORD;
     if (input == potionPassword) {
       localStorage.setItem(POTION_PASSWORD_KEY, potionPassword);

@@ -29,12 +29,17 @@ export default function Write() {
   const [editorValue, setEditorValue] = useState<Descendant[]>(initialValue);
   const [activatedPlugin, setActivatedPlugin] = useState<TPluginFormat | null>(null);
   const titleRef = React.useRef<HTMLInputElement>(null);
+  console.log(editorValue);
 
-  useEffect(() => {
-    if (!isAdmin) {
-      router.replace('/');
-    }
-  }, [router, isAdmin]);
+  function handleChangeEditorValue(value: Descendant[]) {
+    setEditorValue([...value, { type: 'paragraph', children: [{ text: 'ㄴㄴㄴ' }] }]);
+  }
+
+  // useEffect(() => {
+  //   if (!isAdmin) {
+  //     router.replace('/');
+  //   }
+  // }, [router, isAdmin]);
   return (
     <div className='p-40 mx-auto w-full min-h-[calc(100vh-124px)] max-w-[1024px] post-box'>
       {/* 상단 버튼 */}
@@ -67,7 +72,7 @@ export default function Write() {
       />
 
       <div className='flex flex-col items-start'>
-        <Slate editor={editor} initialValue={editorValue} onChange={setEditorValue}>
+        <Slate editor={editor} initialValue={editorValue} onChange={handleChangeEditorValue}>
           <Tools activatedPlugin={activatedPlugin} setActivatedPlugin={setActivatedPlugin} />
 
           {/* h-calc (Toolbar 위에 고정 시키기 위한 높이 설정) */}
@@ -94,7 +99,7 @@ export default function Write() {
             <Preview
               title={titleRef.current?.value}
               editorValue={editorValue}
-              closePreview={() => setActivatedPlugin(null)}
+              closePreview={() => setActivatedPlugin(null)} // 미리보기 닫기
               className='p-40 mx-auto w-full h-[calc(100vh-100px)] max-w-[1024px] overflow-y-scroll post-box prose'
             />
           )}
