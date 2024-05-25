@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from './header';
-import { cls } from '@/lib/client/utils';
+import { cls } from '@/utils/cls';
 
 interface Props {
   children: React.ReactNode;

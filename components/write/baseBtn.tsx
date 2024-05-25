@@ -1,5 +1,5 @@
 import React from 'react';
-import { cls } from '@/lib/client/utils';
+import { cls } from '@/utils/cls';
 
 import Heading1Icon from '@/assets/icons/tool--h1.svg';
 import Heading2Icon from '@/assets/icons/tool--h2.svg';

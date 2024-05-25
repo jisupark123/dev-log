@@ -1,4 +1,4 @@
-import { cls } from '@/lib/client/utils';
+import { cls } from '@/utils/cls';
 import React, { HTMLAttributes } from 'react';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {}

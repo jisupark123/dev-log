@@ -1,6 +1,6 @@
 import BackDrop from '@/components/modal/backdrop';
 import ModalView from '@/components/modal/modalView';
-import { cls } from '@/lib/client/utils';
+import { cls } from '@/utils/cls';
 import SlateCompiler from '@/lib/client/write/slateCompiler';
 import { Descendant } from 'slate';
 
