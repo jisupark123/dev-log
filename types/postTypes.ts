@@ -1,9 +1,10 @@
-export type TPost = {
+export type TPostInfo = {
   title: string;
   description: string;
   publishedAt: string;
   keywords: string[];
   path: string;
+  series: string | null;
 };
 
 export type TSeries = {
@@ -11,5 +12,5 @@ export type TSeries = {
   desc: string | null;
   lastPublished: string;
   path: string;
-  posts: TPost[];
+  posts: TPostInfo[];
 };

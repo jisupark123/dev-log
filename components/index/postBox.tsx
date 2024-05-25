@@ -1,7 +1,7 @@
-import { TPost } from '@/types/postTypes';
+import { TPostInfo } from '@/types/postTypes';
 import Link from 'next/link';
 
-export default function PostBox(post: TPost) {
+export default function PostBox(post: TPostInfo) {
   return (
     <Link href={post.path} className='v-box w-full px-30 py-20 cursor-pointer'>
       <h3 className='text-22 font-bold text-blue mb-10'>{post.title}</h3>

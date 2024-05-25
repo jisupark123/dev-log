@@ -11,15 +11,17 @@ export type PaginationProps = {
   startPage: number;
   lastPage: number;
   pageCount: number;
+  basePath: string;
+  query?: string;
 };
 
-export default function Pagination({ currentPage, startPage, lastPage, pageCount }: PaginationProps) {
+export default function Pagination({ currentPage, startPage, lastPage, pageCount, basePath, query }: PaginationProps) {
   const router = useRouter();
   const onMovePage = (move: 'before' | 'after') => {
     if (move === 'before') {
-      if (currentPage !== 1) router.push(`/?page=${currentPage - 1}`);
+      if (currentPage !== 1) router.push(`${basePath}/?page=${currentPage - 1}${query ? `&${query}` : ''}`);
     } else {
-      if (currentPage !== pageCount) router.push(`/?page=${currentPage + 1}`);
+      if (currentPage !== pageCount) router.push(`${basePath}/?page=${currentPage + 1}${query ? `&${query}` : ''}`);
     }
   };
   return (
@@ -35,7 +37,7 @@ export default function Pagination({ currentPage, startPage, lastPage, pageCount
       </div>
       {Array.from({ length: lastPage - startPage + 1 }, (_, index) => index + 1).map((p) => (
         <Link
-          href={`/?page=${p}`}
+          href={`${basePath}/?page=${p}${query ? `&${query}` : ''}`}
           key={p}
           className={cls(styles['btn'], 'cursor-pointer', p === currentPage ? 'bg-blue text-white' : 'hover:bg-page1')}
         >

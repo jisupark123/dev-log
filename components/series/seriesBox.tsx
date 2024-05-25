@@ -1,4 +1,4 @@
-import { TPost, TSeries } from '@/types/postTypes';
+import { TSeries } from '@/types/postTypes';
 import Link from 'next/link';
 
 export default function SeriesBox(series: TSeries) {

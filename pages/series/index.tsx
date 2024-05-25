@@ -11,12 +11,13 @@ import HomeMenus from '@/components/homeMenus';
 import { seriesDescription } from '@/posts/0_seriesDescription';
 import getLastPublishedDateBySeries from '@/utils/getLastUpdatedDateBySeries';
 import { seriesToPath } from '@/utils/seriesPath';
-import { TPost, TSeries } from '@/types/postTypes';
+import { TPostInfo, TSeries } from '@/types/postTypes';
 import SeriesBox from '@/components/series/seriesBox';
+import getPostsGroupbySeries from '@/utils/getPostsGroupbySeries';
 
 interface Props {
   series: TSeries[];
-  pagination: PaginationProps;
+  pagination: Omit<PaginationProps, 'basePath'>;
   seriesCount: number; // 전체 시리즈 개수
 }
 
@@ -41,7 +42,7 @@ export default function Series({ series, pagination, seriesCount }: Props) {
           {series.map((post) => (
             <SeriesBox key={post.path} {...post} />
           ))}
-          <Pagination {...pagination} />
+          <Pagination basePath={'/series'} {...pagination} />
         </div>
       </div>
     </>
@@ -61,7 +62,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
     title: key,
     desc: seriesDescription[key] || null,
     lastPublished: lastUpdateDateBySeries[key],
-    path: seriesToPath(key),
+    path: `/series/${seriesToPath(key)}`,
     posts: postsGroupbySeries[key],
   }));
 
@@ -77,19 +78,3 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
 
   return { props };
 };
-
-// 시리즈별로 포스트 그룹핑
-function getPostsGroupbySeries(posts: Post[]) {
-  const result: { [key: string]: TPost[] } = {};
-  posts.forEach((post) => {
-    if (post.series) {
-      if (result[post.series]) {
-        result[post.series].push(post);
-      } else {
-        result[post.series] = [post];
-      }
-    }
-  });
-
-  return result;
-}

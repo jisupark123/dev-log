@@ -10,11 +10,11 @@ import { useRouter } from 'next/router';
 import { PAGE_SLICE, POST_SLICE } from '@/constants/pagination';
 import getPaginationProps from '@/utils/getPaginationProps';
 import HomeMenus from '@/components/homeMenus';
-import { TPost } from '@/types/postTypes';
+import { TPostInfo } from '@/types/postTypes';
 
 interface Props {
-  posts: TPost[];
-  pagination: PaginationProps;
+  posts: TPostInfo[];
+  pagination: Omit<PaginationProps, 'basePath'>;
   postCount: number;
 }
 
@@ -39,7 +39,7 @@ export default function Home({ posts, pagination, postCount }: Props) {
           {posts.map((post) => (
             <PostBox key={post.path} {...post} />
           ))}
-          <Pagination {...pagination} />
+          <Pagination basePath='' {...pagination} />
         </div>
       </div>
     </>
@@ -53,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
   }
 
   const paginationProps = getPaginationProps(allPosts.length, currentPage, POST_SLICE, PAGE_SLICE);
-  const posts: TPost[] = allPosts
+  const posts: TPostInfo[] = allPosts
     .sort((a, b) => Number(new Date(b.publishedAt)) - Number(new Date(a.publishedAt)))
     .slice(paginationProps.sliceStart, paginationProps.sliceEnd)
     .map((p) => ({
