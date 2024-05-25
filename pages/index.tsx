@@ -6,13 +6,15 @@ import Page404 from './404';
 
 import PostBox, { PostInfoType } from '@/components/index/postBox';
 import Pagination, { PaginationProps } from '@/components/index/pagination';
-import Link from 'next/link';
-import GithubIcon from '../assets/svg/github-mark.svg';
 import { useRouter } from 'next/router';
+import { PAGE_SLICE, POST_SLICE } from '@/constants/pagination';
+import getPaginationProps from '@/utils/getPaginationProps';
+import HomeMenus from '@/components/homeMenus';
 
 interface Props {
   posts: PostInfoType[];
   pagination: PaginationProps;
+  postCount: number;
 }
 
 export default function Home({ posts, pagination }: Props) {
@@ -28,16 +30,18 @@ export default function Home({ posts, pagination }: Props) {
     <Page404 />
   ) : (
     <>
-      <div className='px-16 w-full' >
-        <div className='flex flex-col items-center gap-10 w-full '>
+      <div className='px-16  w-full max-w-[700px]'>
+        <HomeMenus activeMenu='ALL' />
+
+        <div className='flex flex-col items-center gap-10'>
           {posts.map((post) => (
             <PostBox key={post.path} {...post} />
           ))}
-        </div>
-        {/* <Link href={'/1'}>
+          {/* <Link href={'/1'}>
           <Link href={'/2'}>a</Link>
         </Link> */}
-        <Pagination {...pagination} />
+          <Pagination {...pagination} />
+        </div>
       </div>
     </>
   );
@@ -48,11 +52,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
   if (!currentPage) {
     return { props: { posts: [] } };
   }
-  const POST_SLICE = 10; // 한 페이지에 ?개 포스트
-  const PAGE_SLICE = 5; // 페이지 버튼 ?개
+
+  const paginationProps = getPaginationProps(allPosts.length, currentPage, POST_SLICE, PAGE_SLICE);
   const posts: PostInfoType[] = allPosts
     .sort((a, b) => Number(new Date(b.publishedAt)) - Number(new Date(a.publishedAt)))
-    .slice(currentPage * POST_SLICE - POST_SLICE, currentPage * POST_SLICE)
+    .slice(paginationProps.sliceStart, paginationProps.sliceEnd)
     .map((p) => ({
       title: p.title,
       description: p.description,
@@ -61,18 +65,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
       path: p._raw.flattenedPath,
     }));
 
-  const pageCount = Math.floor((allPosts.length - 1) / POST_SLICE) + 1; // 총 페이지 수 구하기
-  const startPage = Math.floor((currentPage - 1) / PAGE_SLICE) * PAGE_SLICE + 1;
-  const lastPage = startPage + POST_SLICE - 1 < pageCount ? startPage + POST_SLICE - 1 : pageCount;
-
   const props: Props = {
     posts,
-    pagination: {
-      currentPage,
-      startPage,
-      lastPage,
-      pageCount,
-    },
+    pagination: paginationProps,
+    postCount: allPosts.length,
   };
 
   return { props };

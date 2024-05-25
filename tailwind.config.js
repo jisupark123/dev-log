@@ -27,6 +27,7 @@ module.exports = {
         blue: '#6B7AF7',
         indigo: '#6610f2',
         danger: '#E60F6C',
+        gray: '#828086',
         lightGray: '#C1C1C1',
         backdrop: 'rgba(0,0,0,0.7)',
       },

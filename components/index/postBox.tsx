@@ -12,7 +12,7 @@ export type PostInfoType = {
 export default function PostBox(post: PostInfoType) {
   const router = useRouter();
   return (
-    <Link href={`/posts/${post.path}`} className='v-box w-full px-30 py-20 max-w-[700px] cursor-pointer'>
+    <Link href={`/posts/${post.path}`} className='v-box w-full px-30 py-20 cursor-pointer'>
       <h3 className='text-22 font-bold text-blue mb-10'>{post.title}</h3>
       <div className='text-14 mb-20'>{post.description}</div>
       <div className='flex-between'>
