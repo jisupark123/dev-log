@@ -53,7 +53,9 @@ export default function Home({ series, pagination, postCount }: Props) {
             <button
               className='bg-page1 flex justify-center items-center gap-10 py-8 px-12 rounded-8'
               onClick={() =>
-                router.push(`${series.path}?order=${order === 'desc' ? 'asc' : 'desc'}&${page ? `page=${page}` : ''}`)
+                router.replace(
+                  `${series.path}?order=${order === 'desc' ? 'asc' : 'desc'}&${page ? `page=${page}` : ''}`
+                )
               }
             >
               {order === 'desc' ? (
