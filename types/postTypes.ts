@@ -11,8 +11,5 @@ export type TSeries = {
   desc: string | null;
   lastPublished: string;
   path: string;
-  posts: {
-    title: string;
-    path: string;
-  }[];
+  posts: TPost[];
 };

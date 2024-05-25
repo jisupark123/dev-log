@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Post, allPosts } from '@/.contentlayer/generated';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import isHotKey from 'is-hotkey';
-import Page404 from './404';
+import Page404 from '../404';
 import Pagination, { PaginationProps } from '@/components/index/pagination';
 import { useRouter } from 'next/router';
 import { PAGE_SLICE, POST_SLICE } from '@/constants/pagination';
@@ -11,7 +11,7 @@ import HomeMenus from '@/components/homeMenus';
 import { seriesDescription } from '@/posts/0_seriesDescription';
 import getLastPublishedDateBySeries from '@/utils/getLastUpdatedDateBySeries';
 import { seriesToPath } from '@/utils/seriesPath';
-import { TSeries } from '@/types/postTypes';
+import { TPost, TSeries } from '@/types/postTypes';
 import SeriesBox from '@/components/series/seriesBox';
 
 interface Props {
@@ -78,14 +78,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
   return { props };
 };
 
+// 시리즈별로 포스트 그룹핑
 function getPostsGroupbySeries(posts: Post[]) {
-  const result: { [key: string]: { title: string; path: string }[] } = {};
+  const result: { [key: string]: TPost[] } = {};
   posts.forEach((post) => {
     if (post.series) {
       if (result[post.series]) {
-        result[post.series].push({ title: post.title, path: post.path });
+        result[post.series].push(post);
       } else {
-        result[post.series] = [{ title: post.title, path: post.path }];
+        result[post.series] = [post];
       }
     }
   });

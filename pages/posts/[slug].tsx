@@ -1,11 +1,11 @@
 import React from 'react';
-import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, InferGetStaticPropsType } from 'next';
-import { allPosts, Post } from '@/.contentlayer/generated';
+import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
+import { allPosts, Post as TPost } from '@/.contentlayer/generated';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import Link from 'next/link';
 
 interface Props {
-  post: Post;
+  post: TPost;
 }
 
 const Post = ({ post }: Props) => {
