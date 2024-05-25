@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { cls } from '@/lib/client/utils';
+
 import ChevronLeft from '../../assets/icons/chevron_left.svg';
 import ChevronRight from '../../assets/icons/chevron_right.svg';
 import styles from './pagination.module.css';
+import { cls } from '@/utils/cls';
 
 export type PaginationProps = {
   currentPage: number;
