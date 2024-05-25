@@ -33,7 +33,7 @@ export default function Home({ posts, pagination, postCount }: Props) {
     <>
       <div className='px-16  w-full max-w-[700px]'>
         <HomeMenus activeMenu='ALL' />
-        <span className='font-normal text-14 text-gray block mb-10'>{postCount}개의 포스트</span>
+        <span className='font-normal text-14 text-gray block mb-10'>{postCount}개의 글</span>
 
         <div className='flex flex-col items-center gap-10'>
           {posts.map((post) => (

@@ -45,7 +45,7 @@ export default function Home({ series, pagination, postCount }: Props) {
           <div className='flex items-center justify-between mb-20'>
             <span className='font-bold text-30 text-indigo'>Series</span>
             <div className='text-18 font-semibold text-white gradient-blue py-8 px-12 rounded-8'>
-              {postCount}개의 포스트
+              {postCount}개의 글
             </div>
           </div>
           <span className='block font-extrabold text-40 mb-40'>{series.title}</span>

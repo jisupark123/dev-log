@@ -7,7 +7,7 @@ export default function SeriesBox(series: TSeries) {
       <div className='flex flex-between items-center'>
         <h3 className='text-22 font-bold text-blue mb-10'>{series.title}</h3>
         <div className='gradient-blue py-8 px-12 text-white text-16 font-semibold rounded-8'>
-          {series.posts.length}개의 포스트
+          {series.posts.length}개의 글
         </div>
       </div>
       <div className='text-14 mb-70'>{series.desc}</div>
