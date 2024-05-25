@@ -1,4 +1,5 @@
-import { defineDocumentType, makeSource } from 'contentlayer/source-files';
+import { defineDocumentType, defineNestedType, makeSource } from 'contentlayer/source-files';
+import { title } from 'process';
 import rehypePrettyCode from 'rehype-pretty-code';
 
 const options = {
@@ -13,7 +14,14 @@ export const Post = defineDocumentType(() => ({
     title: { type: 'string', required: true },
     description: { type: 'string', required: true },
     publishedAt: { type: 'string', required: true },
-    keywords: { type: 'list', of: { type: 'string' }, required: false },
+    keywords: { type: 'list', of: { type: 'string' }, required: false, default: [] },
+    series: { type: 'string', required: false },
+  },
+  computedFields: {
+    path: {
+      type: 'string',
+      resolve: (p) => `/posts/${p._raw.flattenedPath}`,
+    },
   },
 }));
 

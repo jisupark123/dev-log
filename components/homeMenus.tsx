@@ -7,7 +7,7 @@ export default function HomeMenus({ activeMenu }: { activeMenu: TMenus }) {
   const menus: { title: string; handler: () => void }[] = [
     { title: 'ALL', handler: () => router.push('/') },
     { title: 'Series', handler: () => router.push('/series') },
-    { title: '논문 리뷰', handler: () => router.push('/keywords/논문리뷰') },
+    { title: '논문 리뷰', handler: () => router.push('/keywords/논문-리뷰') },
     { title: 'etc', handler: () => {} },
   ];
 

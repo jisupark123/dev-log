@@ -35,3 +35,7 @@
 .none-highlight {
   -webkit-tap-highlight-color: transparent;
 }
+
+.gradient-blue {
+  background: linear-gradient(90deg, #8b55ff, #84b5ff);
+}

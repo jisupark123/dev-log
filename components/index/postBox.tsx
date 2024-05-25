@@ -1,22 +1,13 @@
+import { TPost } from '@/types/postTypes';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
-export type PostInfoType = {
-  title: string;
-  description: string;
-  publishedAt: string;
-  keywords: string[];
-  path: string;
-};
-
-export default function PostBox(post: PostInfoType) {
-  const router = useRouter();
+export default function PostBox(post: TPost) {
   return (
-    <Link href={`/posts/${post.path}`} className='v-box w-full px-30 py-20 cursor-pointer'>
+    <Link href={post.path} className='v-box w-full px-30 py-20 cursor-pointer'>
       <h3 className='text-22 font-bold text-blue mb-10'>{post.title}</h3>
       <div className='text-14 mb-20'>{post.description}</div>
       <div className='flex-between'>
-        <span className='text-14'>{post.publishedAt}</span>
+        <span className='text-14 text-gray'>{post.publishedAt}</span>
         <div className='flex-center gap-3'>
           {post.keywords.map((keyword) => (
             <Link

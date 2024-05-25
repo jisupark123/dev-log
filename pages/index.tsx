@@ -1,23 +1,24 @@
 import React, { useEffect } from 'react';
 import { allPosts } from '@/.contentlayer/generated';
-import { GetServerSideProps, GetServerSidePropsContext, GetStaticPaths } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import isHotKey from 'is-hotkey';
 import Page404 from './404';
 
-import PostBox, { PostInfoType } from '@/components/index/postBox';
+import PostBox from '@/components/index/postBox';
 import Pagination, { PaginationProps } from '@/components/index/pagination';
 import { useRouter } from 'next/router';
 import { PAGE_SLICE, POST_SLICE } from '@/constants/pagination';
 import getPaginationProps from '@/utils/getPaginationProps';
 import HomeMenus from '@/components/homeMenus';
+import { TPost } from '@/types/postTypes';
 
 interface Props {
-  posts: PostInfoType[];
+  posts: TPost[];
   pagination: PaginationProps;
   postCount: number;
 }
 
-export default function Home({ posts, pagination }: Props) {
+export default function Home({ posts, pagination, postCount }: Props) {
   const router = useRouter();
   useEffect(() => {
     document.addEventListener('keydown', (event) => {
@@ -32,14 +33,12 @@ export default function Home({ posts, pagination }: Props) {
     <>
       <div className='px-16  w-full max-w-[700px]'>
         <HomeMenus activeMenu='ALL' />
+        <span className='font-normal text-14 text-gray block mb-10'>{postCount}개의 포스트</span>
 
         <div className='flex flex-col items-center gap-10'>
           {posts.map((post) => (
             <PostBox key={post.path} {...post} />
           ))}
-          {/* <Link href={'/1'}>
-          <Link href={'/2'}>a</Link>
-        </Link> */}
           <Pagination {...pagination} />
         </div>
       </div>
@@ -54,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
   }
 
   const paginationProps = getPaginationProps(allPosts.length, currentPage, POST_SLICE, PAGE_SLICE);
-  const posts: PostInfoType[] = allPosts
+  const posts: TPost[] = allPosts
     .sort((a, b) => Number(new Date(b.publishedAt)) - Number(new Date(a.publishedAt)))
     .slice(paginationProps.sliceStart, paginationProps.sliceEnd)
     .map((p) => ({
@@ -62,7 +61,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
       description: p.description,
       publishedAt: p.publishedAt,
       keywords: p.keywords || [],
-      path: p._raw.flattenedPath,
+      series: p.series || null,
+      path: p.path,
     }));
 
   const props: Props = {
