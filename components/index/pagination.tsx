@@ -33,7 +33,7 @@ export default function Pagination({ currentPage, startPage, lastPage, pageCount
         )}
         onClick={() => onMovePage('before')}
       >
-        <ChevronLeft />
+        <ChevronLeft width='16' height='16' />
       </div>
       {Array.from({ length: lastPage - startPage + 1 }, (_, index) => index + 1).map((p) => (
         <Link
@@ -51,7 +51,7 @@ export default function Pagination({ currentPage, startPage, lastPage, pageCount
         )}
         onClick={() => onMovePage('after')}
       >
-        <ChevronRight />
+        <ChevronRight width='16' height='16' />
       </div>
     </div>
   );
