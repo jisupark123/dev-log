@@ -36,7 +36,7 @@ export default function Series({ series, pagination, seriesCount }: Props) {
     <>
       <div className='px-16  w-full max-w-[700px]'>
         <HomeMenus activeMenu='Series' />
-        <span className='font-normal text-14 text-gray block mb-10'>{seriesCount}개의 시리즈</span>
+        <span className='font-normal text-14 text-gray block mb-10'>총 {seriesCount}개의 시리즈</span>
 
         <div className='flex flex-col items-center gap-10'>
           {series.map((post) => (
