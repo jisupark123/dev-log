@@ -1,5 +1,7 @@
+import Layout from '@/components/layout';
+
 const Page404 = () => {
-  return <div>404</div>;
+  return <Layout>404</Layout>;
 };
 
 export default Page404;

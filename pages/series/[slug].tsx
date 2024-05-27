@@ -18,6 +18,7 @@ import Underline from '@/components/underline';
 import ChevronUp from '../../assets/icons/chevron_up.svg';
 import ChevronDown from '../../assets/icons/chevron_down.svg';
 import { OrderMethod } from '@/types/orderMethod';
+import Layout from '@/components/layout';
 
 interface Props {
   series: TSeries;
@@ -39,7 +40,7 @@ export default function Home({ series, pagination, postCount }: Props) {
   return !series ? (
     <Page404 />
   ) : (
-    <>
+    <Layout>
       <div className='px-16  w-full max-w-[700px]'>
         <section className='w-full post-box py-20 px-30 mb-30'>
           <div className='flex items-center justify-between mb-20'>
@@ -81,7 +82,7 @@ export default function Home({ series, pagination, postCount }: Props) {
           <Pagination basePath={series.path} query={order ? `order=${order}` : ''} {...pagination} />
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
 

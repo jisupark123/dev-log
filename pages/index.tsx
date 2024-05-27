@@ -11,6 +11,7 @@ import { PAGE_SLICE, POST_SLICE } from '@/constants/pagination';
 import getPaginationProps from '@/utils/getPaginationProps';
 import HomeMenus from '@/components/homeMenus';
 import { TPostInfo } from '@/types/postTypes';
+import Layout from '@/components/layout';
 
 interface Props {
   posts: TPostInfo[];
@@ -30,7 +31,7 @@ export default function Home({ posts, pagination, postCount }: Props) {
   return !posts.length ? (
     <Page404 />
   ) : (
-    <>
+    <Layout>
       <div className='px-16  w-full max-w-[700px]'>
         <HomeMenus activeMenu='ALL' />
         <span className='font-normal text-14 text-gray block mb-10'>총 {postCount}개의 포스트</span>
@@ -42,7 +43,7 @@ export default function Home({ posts, pagination, postCount }: Props) {
           <Pagination basePath='' {...pagination} />
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
 

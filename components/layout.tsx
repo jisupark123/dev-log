@@ -1,14 +1,11 @@
 import React from 'react';
 import Header from './header';
-import { cls } from '@/utils/cls';
+import HeadMeta, { HeadMetaProps } from './headMeta';
 
-interface Props {
-  children: React.ReactNode;
-}
-
-const Layout: React.FC<Props> = ({ children }) => {
+const Layout = ({ metaTitle, metaDescription, children }: HeadMetaProps & { children: React.ReactNode }) => {
   return (
-    <div className={cls('w-screen min-h-screen bg-page1')}>
+    <div className={'w-screen min-h-screen bg-page1'}>
+      <HeadMeta {...{ metaTitle, metaDescription }} />
       <Header />
       <main className={`flex flex-col items-center pt-94 pb-30`}>{children}</main>
     </div>

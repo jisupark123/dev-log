@@ -14,6 +14,7 @@ import { seriesToPath } from '@/utils/seriesPath';
 import { TPostInfo, TSeries } from '@/types/postTypes';
 import SeriesBox from '@/components/series/seriesBox';
 import getPostsGroupbySeries from '@/utils/getPostsGroupbySeries';
+import Layout from '@/components/layout';
 
 interface Props {
   series: TSeries[];
@@ -33,7 +34,7 @@ export default function Series({ series, pagination, seriesCount }: Props) {
   return !series.length ? (
     <Page404 />
   ) : (
-    <>
+    <Layout>
       <div className='px-16  w-full max-w-[700px]'>
         <HomeMenus activeMenu='Series' />
         <span className='font-normal text-14 text-gray block mb-10'>총 {seriesCount}개의 시리즈</span>
@@ -45,7 +46,7 @@ export default function Series({ series, pagination, seriesCount }: Props) {
           <Pagination basePath={'/series'} {...pagination} />
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
 
