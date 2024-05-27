@@ -17,6 +17,7 @@ export default function HeadMeta({ metaTitle, metaDescription }: HeadMetaProps) 
       <meta property='og:type' content='website' />
       {/* <meta property='og:image' content={'/imgs/logo_1.png'} /> */}
       {/* <meta property='og:article:author' content='모두의 사활' /> */}
+      <meta name='google-site-verification' content='XIaRQEwciTKFV8e8Ezrgswd0vukQbHcQO6Vt2I-fwtk' />
     </Head>
   );
 }
