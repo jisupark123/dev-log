@@ -6,11 +6,12 @@ import { TKeyword } from '@/types/postTypes';
 import { useRouter } from 'next/router';
 import { cls } from '@/utils/cls';
 import { pathToString } from '@/utils/seriesPath';
+import { signatureKeywords } from './homeMenus';
 
 export default function CategoryFilter({ keywords }: { keywords: TKeyword[] }) {
   const [showCategoryFilter, setShowCategoryFilter] = useState(false);
   const router = useRouter();
-  const { keyword } = router.query;
+  const { keyword } = router.query; // 선택된 키워드
   const decodedKeyword = keyword ? pathToString(keyword as string) : null;
   return (
     <div className='mb-30 flex flex-col gap-10'>
@@ -21,19 +22,21 @@ export default function CategoryFilter({ keywords }: { keywords: TKeyword[] }) {
         </span>
       </button>
       {showCategoryFilter && (
-        <div className='flex items-center gap-5 flex-wrap'>
-          {keywords.map((keyword) => (
-            <Link
-              key={keyword.title}
-              href={keyword.path}
-              className={cls(
-                'py-3 px-10 rounded-20 text-14',
-                decodedKeyword === keyword.title ? 'bg-blue text-white' : 'bg-white text-blue hover:bg-page2'
-              )}
-            >
-              {keyword.title}
-            </Link>
-          ))}
+        <div className='flex items-center gap-x-7 gap-y-10 flex-wrap'>
+          {keywords
+            .filter((keyword) => !signatureKeywords.includes(keyword.title))
+            .map((keyword) => (
+              <Link
+                key={keyword.title}
+                href={keyword.path}
+                className={cls(
+                  'py-3 px-10 rounded-20 text-14',
+                  decodedKeyword === keyword.title ? 'bg-blue text-white' : 'bg-white text-blue hover:bg-page2'
+                )}
+              >
+                {keyword.title}
+              </Link>
+            ))}
         </div>
       )}
     </div>

@@ -1,9 +1,8 @@
 import { cls } from '@/utils/cls';
 import { useRouter } from 'next/router';
 
-type TMenus = 'ALL' | 'Series' | '논문 리뷰';
-const signatureKeywords = ['논문 리뷰']; // 기본적으로 표시되는 키워드
-export default function HomeMenus({ activeMenu }: { activeMenu: TMenus | string }) {
+export const signatureKeywords = ['논문 리뷰']; // 기본적으로 표시되는 키워드
+export default function HomeMenus({ activeMenu }: { activeMenu: string }) {
   const router = useRouter();
 
   const menus: { title: string; handler: () => void }[] = [
@@ -13,7 +12,7 @@ export default function HomeMenus({ activeMenu }: { activeMenu: TMenus | string 
   ];
 
   return (
-    <div className='flex items-center mb-20'>
+    <div className='flex items-center flex-wrap mb-20'>
       {menus.map(({ title, handler }) => (
         <button
           key={title}

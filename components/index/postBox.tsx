@@ -1,5 +1,6 @@
 import { TPostInfo } from '@/types/postTypes';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function PostBox(post: TPostInfo) {
   return (
@@ -7,8 +8,8 @@ export default function PostBox(post: TPostInfo) {
       <h3 className='text-22 font-bold text-blue mb-10'>{post.title}</h3>
       <div className='text-14 mb-20'>{post.description}</div>
       <div className='flex-between'>
-        <span className='text-14 text-gray'>{post.publishedAt}</span>
-        <div className='flex-center gap-3'>
+        <span className='text-14 text-gray shrink-0'>{post.publishedAt}</span>
+        <div className='flex-center gap-3 flex-wrap'>
           {post.keywords.map((keyword) => (
             <Link
               key={keyword.title}

@@ -90,7 +90,7 @@ const Post = ({ post, series, currenSeriesIndex }: Props) => {
         )}
         <section className='p-40 w-full max-w-[1024px] mx-auto prose post-box'>
           <h1>{post.title}</h1>
-          <div className='flex items-center gap-7 mb-50'>
+          <div className='flex items-center gap-7 mb-50 flex-wrap'>
             {post.keywords.map((keyword) => (
               <Link
                 key={keyword}
