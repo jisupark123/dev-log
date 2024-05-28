@@ -14,8 +14,8 @@ export default function CategoryFilter({ keywords }: { keywords: TKeyword[] }) {
   const decodedKeyword = keyword ? pathToString(keyword as string) : null;
   return (
     <div className='mb-30 flex flex-col gap-10'>
-      <button className='flex items-center gap-10' onClick={() => setShowCategoryFilter((prev) => !prev)}>
-        {showCategoryFilter ? <ChevronUp /> : <ChevronDown />}
+      <button className='flex items-center gap-7' onClick={() => setShowCategoryFilter((prev) => !prev)}>
+        {showCategoryFilter ? <ChevronUp color='#828086' /> : <ChevronDown color='#828086' />}
         <span className='text-14 font-normal text-gray'>
           {showCategoryFilter ? '카테고리 숨기기' : '카테고리 펼쳐보기'}
         </span>
