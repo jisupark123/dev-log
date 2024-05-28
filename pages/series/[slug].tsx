@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { PAGE_SLICE, POST_SLICE } from '@/constants/pagination';
 import getPaginationProps from '@/utils/getPaginationProps';
 import { TSeries } from '@/types/postTypes';
-import { pathToSeries, seriesToPath } from '@/utils/seriesPath';
+import { pathToString, stringToPath } from '@/utils/seriesPath';
 import getPostsGroupbySeries from '@/utils/getPostsGroupbySeries';
 import getLastPublishedDateBySeries from '@/utils/getLastUpdatedDateBySeries';
 import { seriesDescription } from '@/posts/0_seriesDescription';
@@ -88,7 +88,7 @@ export default function Home({ series, pagination, postCount }: Props) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const order: OrderMethod = ctx.query.order === 'desc' ? 'desc' : 'asc'; // 오름차순이 기본
-  const seriesTitle = pathToSeries(ctx.query.slug as string);
+  const seriesTitle = pathToString(ctx.query.slug as string);
   const currentPage = Number(ctx.query.page || 1);
   if (!currentPage) {
     return { props: { posts: [] } };
@@ -100,7 +100,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
     title: seriesTitle,
     desc: seriesDescription[seriesTitle] || null,
     lastPublished: lastUpdateDateBySeries[seriesTitle],
-    path: `/series/${seriesToPath(seriesTitle)}`,
+    path: `/series/${stringToPath(seriesTitle)}`,
     posts: postsGroupbySeries[seriesTitle],
   };
   const paginationProps = getPaginationProps(series.posts.length, currentPage, POST_SLICE, PAGE_SLICE);

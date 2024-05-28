@@ -2,7 +2,7 @@ export type TPostInfo = {
   title: string;
   description: string;
   publishedAt: string;
-  keywords: string[];
+  keywords: TKeyword[];
   path: string;
   series: string | null;
 };
@@ -13,4 +13,9 @@ export type TSeries = {
   lastPublished: string;
   path: string;
   posts: TPostInfo[];
+};
+
+export type TKeyword = {
+  title: string;
+  path: string;
 };

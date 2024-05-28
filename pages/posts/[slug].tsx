@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { cls } from '@/utils/cls';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout';
+import { stringToPath } from '@/utils/seriesPath';
 interface Props {
   post: TPost;
   series?: Pick<TSeries, 'title' | 'path'>[];
@@ -112,8 +113,11 @@ export const getStaticProps: GetStaticProps = async ({ params }: GetStaticPropsC
   }
   const series = allPosts
     .filter((p) => p.series === post.series)
-    .sort((a, b) => Number(new Date(a.publishedAt)) - Number(new Date(b.publishedAt)));
-
+    .sort((a, b) => Number(new Date(a.publishedAt)) - Number(new Date(b.publishedAt)))
+    .map((p) => ({
+      ...p,
+      keywords: p.keywords.map((k) => ({ title: k, path: `/keywords/${stringToPath(k)}` })) || [],
+    }));
   const currenSeriesIndex = series.findIndex((p) => p._raw.flattenedPath === params?.slug);
   return {
     props: { post, series, currenSeriesIndex },

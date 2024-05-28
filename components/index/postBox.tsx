@@ -11,11 +11,11 @@ export default function PostBox(post: TPostInfo) {
         <div className='flex-center gap-3'>
           {post.keywords.map((keyword) => (
             <Link
-              key={keyword}
-              href={`/keywords/${keyword}`}
+              key={keyword.title}
+              href={keyword.path}
               className='bg-page1 text-blue py-3 px-10 rounded-20 text-14 hover:bg-page2'
             >
-              {keyword}
+              {keyword.title}
             </Link>
           ))}
         </div>

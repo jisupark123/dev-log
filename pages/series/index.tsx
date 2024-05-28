@@ -10,11 +10,13 @@ import getPaginationProps from '@/utils/getPaginationProps';
 import HomeMenus from '@/components/homeMenus';
 import { seriesDescription } from '@/posts/0_seriesDescription';
 import getLastPublishedDateBySeries from '@/utils/getLastUpdatedDateBySeries';
-import { seriesToPath } from '@/utils/seriesPath';
-import { TPostInfo, TSeries } from '@/types/postTypes';
+import { stringToPath } from '@/utils/seriesPath';
+import { TKeyword, TPostInfo, TSeries } from '@/types/postTypes';
 import SeriesBox from '@/components/series/seriesBox';
 import getPostsGroupbySeries from '@/utils/getPostsGroupbySeries';
 import Layout from '@/components/layout';
+import CategoryFilter from '@/components/categoryFilter';
+import getAllKeywords from '@/utils/getAllKeywords';
 
 interface Props {
   series: TSeries[];
@@ -63,7 +65,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
     title: key,
     desc: seriesDescription[key] || null,
     lastPublished: lastUpdateDateBySeries[key],
-    path: `/series/${seriesToPath(key)}`,
+    path: `/series/${stringToPath(key)}`,
     posts: postsGroupbySeries[key],
   }));
 
