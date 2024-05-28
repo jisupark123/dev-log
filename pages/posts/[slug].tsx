@@ -90,6 +90,17 @@ const Post = ({ post, series, currenSeriesIndex }: Props) => {
         )}
         <section className='p-40 w-full max-w-[1024px] mx-auto prose post-box'>
           <h1>{post.title}</h1>
+          <div className='flex items-center gap-7 mb-50'>
+            {post.keywords.map((keyword) => (
+              <Link
+                key={keyword}
+                href={`/keywords/${stringToPath(keyword)}`}
+                className='bg-page1 text-blue py-3 px-10 rounded-20 text-14 hover:bg-page2 no-underline'
+              >
+                {keyword}
+              </Link>
+            ))}
+          </div>
           <MDXComponent />
         </section>
       </div>
