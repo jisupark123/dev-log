@@ -24,20 +24,18 @@ export default function CategoryFilter({ keywords }: { keywords: TKeyword[] }) {
       </button>
       {showCategoryFilter && (
         <div className='flex items-center gap-x-7 gap-y-10 flex-wrap'>
-          {keywords
-            .filter((keyword) => !signatureKeywords.includes(keyword.title))
-            .map((keyword) => (
-              <Link
-                key={keyword.title}
-                href={keyword.path}
-                className={cls(
-                  'py-3 px-10 rounded-20 text-14',
-                  decodedKeyword === keyword.title ? 'bg-blue text-white' : 'bg-white text-blue hover:bg-page2'
-                )}
-              >
-                {keyword.title}
-              </Link>
-            ))}
+          {keywords.map((keyword) => (
+            <Link
+              key={keyword.title}
+              href={keyword.path}
+              className={cls(
+                'py-3 px-10 rounded-20 text-14',
+                decodedKeyword === keyword.title ? 'bg-blue text-white' : 'bg-white text-blue hover:bg-page2'
+              )}
+            >
+              {keyword.title}
+            </Link>
+          ))}
         </div>
       )}
     </div>
