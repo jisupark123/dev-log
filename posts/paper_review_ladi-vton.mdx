@@ -1,0 +1,263 @@
+---
+title: Paper Review - LaDI-VTON(Latent Diffusion Textual-Inversion Enhanced Virtual Try-On)
+publishedAt: 2024-02-27
+description: SKT-FLY-AI 프로젝트에서 참고한 논문 LaDI-VTON에 대해 정리한 글입니다.
+keywords: [논문 리뷰]
+series: SKT FLY AI Challenge
+---
+
+![](https://private-user-images.githubusercontent.com/87124432/340074328-620d2d71-9f61-4042-bf06-f16f3aa41eaf.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTg1MjUzNzksIm5iZiI6MTcxODUyNTA3OSwicGF0aCI6Ii84NzEyNDQzMi8zNDAwNzQzMjgtNjIwZDJkNzEtOWY2MS00MDQyLWJmMDYtZjE2ZjNhYTQxZWFmLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA2MTYlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNjE2VDA4MDQzOVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTE5NTY4ODM5OWJhMjg5YjU2ZjdiNzM0OWM0NzBlMjhjYTY0NDA5YzYyZjNjMGRjZGEwOGZhMmVhNTViMjA1NzImWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.6bNMEOsZ4VYnGSJC-6BKPvWSOcW_KsazFd6ao-MqDi0)
+![](https://private-user-images.githubusercontent.com/87124432/340074442-ffc933ba-38ad-48b8-99a1-98ec4366667b.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTg1MjUzNzksIm5iZiI6MTcxODUyNTA3OSwicGF0aCI6Ii84NzEyNDQzMi8zNDAwNzQ0NDItZmZjOTMzYmEtMzhhZC00OGI4LTk5YTEtOThlYzQzNjY2NjdiLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA2MTYlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNjE2VDA4MDQzOVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWNjNmVjNGIxMjE3YWI2ZDAxZDI3M2VlODQ2MDU5NWVlYWZmODBkMWEwOTk5M2NkMGUwYmYzMDkyMWY4NTRkMDYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.XTv28xMh37wIgJAgQZCfOoTgD7k5IkAKjV378ymh3Ww)
+
+[논문 링크](https://arxiv.org/abs/2305.13501)
+
+<br />
+
+SKT-FLY-AI 4기 프로젝트로 진행했던 Reclos는 가상 피팅 기술을 중고 의류 플랫폼과 접목시킨 서비스입니다.
+
+해당 프로젝트에서 참고했던 논문 중 하나인 LaDI-VTON(Latent Diffusion Textual-Inversion Enhanced Virtual Try-On) 논문을 정리해 보고자 합니다.
+
+### 기술 선정 배경
+
+LaDI-VTON 외에도 다양한 가상 피팅 기술 관련 논문이 있었지만 다음과 같은 이유로 LaDI-VTON을 선정하게 되었습니다.
+
+- **모델 성능**: 프로젝트 당시 LaDI-VTON이 가장 최신 기술이었고 논문에 나온 모델 성능이 다른 논문들에 비해 우수했습니다.
+- **공개된 모델**: 학습에 사용된 데이터셋과 모델 코드, 가중치가 모두 공개되어 있어서 참고하기 용이했습니다.
+- **End-to-End 모델**: 다른 논문들은 가상 피팅을 위한 전처리 과정이 복잡하고 여러 모델을 연결해야 하는 경우가 많았지만 LaDI-VTON은 End-to-End 모델로 구성되어 있어서 구현이 간단했습니다.
+
+<br />
+<br />
+
+# Introduction
+
+## Latent Diffusion Model (LDM)
+
+- 가상 피팅에서 지금까지의 SOTA는 생성 AI 모델로 GAN을 사용해왔음
+- LaDI-VTON은 Latent Diffusion Model을 가상 피팅에 적용한 최초의 시도
+
+## 논문 요약
+
+- LDM(Latent Diffusion Model)을 사용한 가상 피팅 모델
+- LDM에서의 reconstruction error를 줄이기 위해 autoencoder에 skip connection 적용. 이를 통해 인페인팅 외부 영역의 세부 정보 보존
+- 원본 옷의 디테일을 보존하기 위한 textual inversion module 정의
+- 실험을 통해 아키텍쳐 각 구성 요소의 효율성을 검증했고, 해당 Task에서 널리 사용되는 벤치마크에 대해 SOTA를 달성
+
+<br />
+<br />
+
+# Related Work
+
+## Image-Based Virtual Try-On
+
+Image-Based Virtual Try-On은 원하는 옷을 피사체의 해당 영역에 transfer 시키면서
+피사체의 자세와 정체성(얼굴, 손, 발 등)을 보존하는 것을 목표로 한다.
+
+VITON이 이 분야의 선구적인 연구 중 하나로 다음과 같이 구성된 프레임워크를 사용한다.
+
+- TPS 변환을 통해 옷을 warping 하여 더욱 입체적이고 자연스럽게 표현
+- Encoder-Decoder Generator 사용
+
+<br />
+
+후속 연구들은 위의 구조에서 warping 모듈을 향상시키거나, 생성 단계와 결과 개선에 초점을 맞추고 있다.
+
+현재 방법들은 모두 GAN 기반으로 생성을 수행하지만, 이 논문에서는 Latent Diffusion Model을 사용한 방법을 제안한다.
+
+## Diffusion Models
+
+- Diffusion Model은 text-to-image, image-to-image, image 편집 등 다양한 task에 적용되어 큰 영향을 미치고 있다.
+- 특히 가상 피팅과 관련하여, 인체 자세 보존이 중요한 task인 인간 이미지 생성 분야에서 Diffusion Model이 활용되고 있다.
+
+## Textual Inversion
+
+- Textual Inversion은 비교적 최근 제안된 기술로, text encoder의 임베딩 공간에서 pseudo word를 학습하는 것을 목표로 한다.
+- Textual Inversion을 통해 사용자 개인화된 이미지 생성 및 편집을 가능하게 하는 다양한 후속 연구들이 제안되었다.
+
+<details>
+<summary>Textual Inversion 더보기</summary>
+
+<div>
+  ![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/textual_inversion.png?raw=true)
+  [https://jang-inspiration.com/an-image-is-worth-one-word](https://jang-inspiration.com/an-image-is-worth-one-word)
+</div>
+
+</details>
+
+<br />
+<br />
+
+# Proposed Method
+
+## CLIP (Contrastive Language-Image Pre-training)
+
+LaDI-VTON 모델에 대해 이해하려면 먼저 CLIP을 알아야 합니다.
+
+CLIP은 OpenAI에서 제안한 모델로, 이미지와 텍스트를 함께 학습하여 이미지와 텍스트 간의 관계를 학습하는 모델입니다.
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/clip.png?raw=true)
+
+CLIP에서의 학습 과정은 다음과 같습니다.
+
+1. 이미지와 텍스트를 각각 동일한 차원으로 임베딩한다.
+2. N개의 대각 원소들 각각의 코사인 유사도를 최대화하고, 나머지 원소들의 코사인 유사도는 최소가 되도록 인코더를 학습시킨다.
+
+이렇게 학습된 CLIP은 이미지와 텍스트 간의 관계를 잘 이해하고 있어서, 이미지를 텍스트로 설명하거나 텍스트를 이미지로 생성하는 등 다양한 task에 사용할 수 있습니다.
+
+LaDI-VTON은 가상 피팅 시 원본 옷의 질감, 색상 등의 디테일을 보존하기 위해 CLIP을 사용합니다.
+
+CLIP에 대해 보다 자세한 내용은 해당 논문을 참고하시기 바랍니다.
+
+[https://arxiv.org/abs/2103.00020](https://arxiv.org/abs/2103.00020)
+
+## Model Overview
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/model_overview.png?raw=true)
+
+모델이 꽤 복잡하므로 부분으로 나눠서 정리했습니다.
+
+## PTE(pseudo-word token embeddings)
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/PTE1.png?raw=true)
+
+- 원본 옷 이미지를 통해 해당 옷에 대해 설명된 글을 예측하도록 하는 과정을 논문에서는 **PTE(pseudo-word token embeddings)** 라고 정의
+- PTE로 생성된 pseudo-word는 diffusion model의 또 다른 input으로 사용됨
+- 모델 학습 과정에는 CLIP에서 사용하는 임베딩 방식을 사용
+- 𝐹𝜃 → CLIP에서 이미지 인코딩을 수행하는 부분으로, VIT Layer과 MLP로 구성
+- 𝐹𝜃을 학습시킬 때는 PTE의 결과인 TE 외에 diffusion model의 다른 input은 freezing 한 상태로 수행된다.
+
+<hr />
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/PTE2.png?raw=true)
+
+- 데이터셋에는 옷의 특징(질감, 핏 등)을 잘 나타내는 문장이 labeling 되어 있음
+- 해당 문장을 pretrained된 lookup table로 임베딩해서 CLIP의 임베딩 공간에 위치시킴
+- 이 부분은 모델 학습 시에만 사용되며, 추론 시에는 𝐹𝜃이 옷에 대한 문장(벡터)을 바로 생성한다.
+
+<hr />
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/PTE3.png?raw=true)
+
+- CLIP의 임베딩 공간에서 옷에 대한 문장을 생성하도록 학습
+- TE는 위 과정의 결과 벡터로 diffusion model의 또 다른 input으로 사용하여 옷의 디테일을 보존한다.
+
+<hr />
+
+## 사용자의 포즈에 맞게 옷 변형
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/pose1.png?raw=true)
+
+- 원본 사진에서 추출한 사용자의 포즈맵, 마스킹(m,p,z)을 이용해서 변형된 옷 사진 C_W 생성
+- 이는 모두 Diffusion 모델의 input으로 사용
+- 이에 대한 구현은 [Toward Characteristic-Preserving Image-based Virtual Try-On Network](https://arxiv.org/abs/1807.07688) 논문에서 제안된 방법을 사용
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/pose2.png?raw=true)
+
+<hr />
+
+## Diffusion Network 훈련 (Fine-Tuning)
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/diffusion_network.png?raw=true)
+
+- Diffusion Network를 fine-tuning 하는 과정 (사전 훈련된 가중치 사용)
+- 포즈맵(p)과 변형된 옷(C_W), 마스킹 된 영역(I_M)을 모두 인풋으로 넣기 위해 모델의 입력 차원 확장
+- 이때 포즈맵과 변형된 옷(포즈맵을 통해 생성됨)을 모두 input으로 사용하는 이유는, 변형된 옷(C_W)을 생성하는 과정에서 포즈에 대한 손실이 일어났을 수도 있기 때문이라고 논문에서 설명함
+
+<hr />
+
+## EMASC(Enhanced Mask-Aware Skip Connection) Module
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/emasc1.png?raw=true)
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/emasc2.png?raw=true)
+
+- Diffusion Model의 U-Net 구조에서 이미지를 압축할 때 모델의 특성(얼굴, 손, 발등)을 보존하기 위해 추가한 모듈
+- Skip Connection을 통해 U-Net을 거치지 않고 인코더에서 디코더로 전달
+- EMASC 출력을 처리하여 마스킹 된 영역(M)이 디코더로 전달되지 않게 함. (EMASC를 통해 보존할 부분은 마스킹 되지 않은 영역)
+- EMASC 모듈은 두 개의 Convolution Layer로 구성
+
+<br />
+<br />
+
+# Experimental Evaluation
+
+## Datasets
+
+- 2가지 데이터셋(Dress Code, VITON-HD)으로 실험을 구성
+- 두 데이터셋 모두 매장 내 의류와 모델 이미지로 구성된 paired/unpaired 데이터셋
+  - **paired**: 모델이 입은 옷과 새로 입히는 옷이 같음
+  - **unpaired**: 모델이 입은 옷과 새로 입히는 옷이 다름
+
+## Evaluation Metrics
+
+생성된 이미지와 정답 이미지 간의 유사도를 측정하기 위해 다음과 같은 metric을 사용했습니다.
+
+### LPIPS (Learned Perceptual Image Patch Similarity)
+
+- 비교할 2개의 이미지를 각각 VGG Network에 넣고, 중간 layer의 feature 값들을 각각 뽑아내서, 2개의 feature가 유사한지를 측정하여 평가 지표로 사용
+- 값이 낮을수록 높은 유사도
+
+### SSIM (Structural Similarity Index Measure)
+
+- Luminance(휘도, 빛의 밝기), Contrast(대비, 밝기 차이), Structure(구조, 상관관계) 3개의 지표를 사용
+- 값이 높을수록 높은 유사도
+
+### FID (Fréchet Inception Distance)
+
+- 이미지의 분포 간의 거리를 측정
+- pre-train된 Inception 모델을 사용해 이미지의 특징을 추출하고, 이 두 분포 간의 Frechet 거리를 계산 (Frechet - 두 곡선이 얼마나 비슷한지 측정하는 거리 지표)
+- 값이 낮을수록 높은 유사도
+
+### KID (Kernel Inception Distance)
+
+- FID와 비슷하지만, 두 분포 간의 거리를 계산할 때, MMD를 사용
+- MMD(Maximum Mean Discrepancy) - 두 개의 다른 데이터셋이 같은 분포에서 왔는지를 통계적으로 검정
+- FID에 비해 이상치(outliers)에 덜 민감
+- 값이 낮을수록 높은 유사도
+
+## Experimental Results
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/test_result1.png?raw=true)
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/test_result2.png?raw=true)
+
+- **Table 1**: Dress Code Dataset에서의 실험 결과
+- **Table 2**: VITON-HD Dataset에서의 실험 결과
+- paired/unpaired 데이터셋 모두에서 모든 경쟁사보다 훨씬 뛰어난 성능을 발휘
+
+<br />
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/experimental_result1.png?raw=true)
+
+- LaDI-VTON이 다른 경쟁 모델보다 원본 옷의 디테일을 잘 보존하고 더 자연스러운 결과를 보여줌
+
+<br />
+
+![](https://github.com/jisupark123/dev-log/blob/main/post_images/paper_review_ladi-vton/experimental_result2.png?raw=true)
+
+- 왼쪽이 원본, 가운데가 EMASC 적용 전, 오른쪽이 EMASC 적용 후
+- EMASC 모듈을 적용했을 때 모델의 디테일이 더 잘 보존되는 것을 확인할 수 있음
+
+<br />
+<br />
+
+# Conclusion
+
+- LaDI-VTON에서는 최초로 가상 피팅을 위해 Latent Diffusion Model을 사용
+- 최초로 Textual Inversion 모듈을 사용하여 원본 옷의 디테일을 보존하는 프로세스를 제안
+- Latent Diffusion Model의 autoencoder 구조에 skip connection을 적용하는 EMASC 모듈을 제안
+- 이는 손, 얼굴, 발과 같은 인체의 디테일한 부분을 보존하는 데 크게 효과적임
+- 두 가지 벤치마크인 Dress Code, VITON-HD 데이터셋 모두에 대해 SOTA를 달성
+
+<br />
+<br />
+
+# Limitations
+
+- LaDI-VTON 모델은 옷의 문자나 숫자를 재현하는 데 어려움을 겪음
+- 연구팀은 이를 Diffusion Model의 한계로 설명하고 있음
+
+<br />
+<br />
+
+# 마치며
+
+- AI 관련 프로젝트를 처음 해보면서 논문 리뷰도 처음 해보게 되었는데, 생각처럼 쉽지 않았습니다.
+- 이제야 AI 분야에 살짝이나마 발을 들이게 된 것 같아 기쁘고 앞으로 꾸준히 관심 분야의 논문들을 정리해 보면서 깊이 있게 공부해 보고 싶습니다.
