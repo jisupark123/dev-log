@@ -1,6 +1,7 @@
 import { defineDocumentType, defineNestedType, makeSource } from 'contentlayer/source-files';
-import { title } from 'process';
 import rehypePrettyCode from 'rehype-pretty-code';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 const options = {
   theme: 'github-dark',
@@ -29,6 +30,7 @@ export default makeSource({
   contentDirPath: 'posts', // 소스를 읽어올 path
   documentTypes: [Post], // 생성할 타입
   mdx: {
-    rehypePlugins: [[rehypePrettyCode, options]],
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [[rehypePrettyCode, options], rehypeKatex as any],
   },
 });
