@@ -10,14 +10,14 @@ series: 단단한 강화학습
 
 다중 선택 문제의 원형은 다음과 같다.
 
-- k개의 서로 다른 옵션이나 행동 중 하나를 반복적으로 선택해야 한다. <br/>
+- k 개의 서로 다른 옵션이나 행동 중 하나를 반복적으로 선택해야 한다. <br/>
 - 매 선택 후에는 숫자로 된 보상이 주어진다. <br/>
 - 이때 보상을 나타내는 값은 선택된 행동에 따라 결정되는 정상 확률 분포(stationary probability distribution, 시간에 따라 변하지 않는 확률 분포)로부터 얻어진다. <br/>
 - 선택의 목적은 일정 기간, 예를 들면 행동을 1000번 선택하는 기간 또는 1000개의 시간 간격(time step) 동안 주어지는 보상의 총량에 대한 기댓값을 최대화하는 것이다.
 
-다중 선택 문제에서 k개의 행동 각각에는 그 행동이 선택되었을 때 기대할 수 있는 평균 보상값이 할당된다.
+다중 선택 문제에서 k 개의 행동 각각에는 그 행동이 선택되었을 때 기대할 수 있는 평균 보상 값이 할당된다.
 
-이러한 평균 보상값을 그 행동의 가치(value)라고 부르자.
+이러한 평균 보상 값을 그 행동의 가치(value)라고 부르자.
 
 시간 단계 $t$에서 선택되는 행동은 $A_t$ 로 표현하고 그에 따른 보상은 $R_t$로 표현한다.
 
@@ -25,17 +25,17 @@ series: 단단한 강화학습
 
 $q_*(a) = E[R_t | A_t=a]$
 
-시간 단계 $t$에서 추정한 행동 $a$의 가치는 $Q_t(a)$로 표현하는데, 추정값 $Q_t(a)$가 기댓값 $q_*(a)$와 가까워질수록 정확한 추정이 된다.
+시간 단계 $t$에서 추정한 행동 $a$의 가치는 $Q_t(a)$로 표현하는데, 추정 값 $Q_t(a)$가 기댓값 $q_*(a)$와 가까워질수록 정확한 추정이 된다.
 
 ## Action Value Method (행동 가치 방법)
 
-- 행동의 가치를 추정하고 추정값으로부터 행동을 선택하도록 결정하는 방법을 총칭하여 행동 가치 방법 (action-value method)이라고 한다.
+- 행동의 가치를 추정하고 추정 값으로부터 행동을 선택하도록 결정하는 방법을 총칭하여 행동 가치 방법 (action-value method)이라고 한다.
 - 어떤 행동이 갖는 가치의 참값은 행동이 선택될 때의 평균 보상이다.
 - 이 참값을 추정하는 간단한 방법은 실제로 받은 보상의 산술 평균을 계산하는 것이다.
 
 <br />
 
-$Q_t(a)$ = 시각 t에서 행동 a를 선택했을 때의 가치의 추정값
+$Q_t(a)$ = 시각 t에서 행동 a를 선택했을 때의 가치의 추정 값
 
 = 시각 t 이전에 취해지는 행동 a에 대한 보상의 합 / 시각 t 이전에 행동 a를 취하는 횟수
 
@@ -47,16 +47,16 @@ $\cfrac{\sum_{i=1}^{t-1}R_i \cdot 1_{A_i}=a}{\sum_{i=1}^{t-1} 1_{A_i}=a}$
 
 만약 $a$를 선택한 적이 없어서 위 식의 분모가 0이라면 $Q_t(a)$의 값을 0과 같은 어떤 기본값으로 정의한다.
 
-분모가 무한으로 커진다면 큰 수의 법칙에 따라 $Q_t(a)$ (추정값)은 $q_*(a)$ (실제 가치)로 수렴한다.
+분모가 무한으로 커진다면 큰 수의 법칙에 따라 $Q_t(a)$ (추정 값)은 $q_*(a)$ (실제 가치)로 수렴한다.
 
 ### Greedy VS $\epsilon$-Greedy
 
-그렇다면 Action을 선택하기 위해 위에서 구한 추정값을 어떻게 사용할까?
+그렇다면 Action을 선택하기 위해 위에서 구한 추정 값을 어떻게 사용할까?
 
 <br />
 1. **Greedy**
 
-- 가장 간단한 방법으로, 추정값이 가장 높은 행동을 선택하는 방법이다.
+- 가장 간단한 방법으로, 추정 값이 가장 높은 행동을 선택하는 방법이다.
 - $A_t = argmax(Q_t(a))$
 
 <br />
@@ -81,7 +81,7 @@ ex. Epsilon Greedy에서 2개의 행동이 있고 $\epsilon=0.5$ 라면 탐욕�
 
 - 하나의 다중 선택 문제는 10개의 행동과 1000개의 시간 단계로 구성되고, 총 2000 문제를 무작위로 생성한다.
 - 각각의 행동에 대해 행동 가치 $q_*(a)$는 평균이 0이고 분산이 1인 정규 분포에 따라 선택된다.
-- 학습 방법에 따라 시간 단계 $t$에서 행동 $A_t$를 선택할 때, 실제 보상값 $R_t$는 평균이 $q_*(A_t)$이고 분산이 1인 정규 분포로부터 선택된다.
+- 학습 방법에 따라 시간 단계 $t$에서 행동 $A_t$를 선택할 때, 실제 보상 값 $R_t$는 평균이 $q_*(A_t)$이고 분산이 1인 정규 분포로부터 선택된다.
 
 - 각각의 방법은 1000번의 시간 단계를 거치는 경험을 통해 스스로 발전하게 되고, 이를 한 번의 실행(run)이라 한다.
 - 각 방법은 총 2000번의 문제에 대해 독립적으로 실행되고 시간 단계마다 평균 보상을 계산하여 학습 알고리즘의 성능을 평가한다.
@@ -141,7 +141,7 @@ def run(epsilon, n_steps, scale=1):
 
 <br />
 
-이제 학습 알고리즘에 따라 시뮬레이션을 진행하고, 시뮬레이션의 각 Step별로 얻은 보상의 평균을 구한다.
+이제 학습 알고리즘에 따라 시뮬레이션을 진행하고, 시뮬레이션의 각 Step 별로 얻은 보상의 평균을 구한다.
 
 학습 알고리즘은 Greedy, $\epsilon=0.1$, $\epsilon=0.01$ 총 3가지로 설정했다.
 
@@ -163,32 +163,32 @@ epsilon2_results = np.mean(mean_rewards_epsilon2, axis=0)
 
 <br />
 
-Step - 1000 <br />
+step - 1000 <br />
 scale(보상의 분산) - 1
 
 ![](https://github.com/jisupark123/dev-log/blob/main/post_images/hard_reinforcement_learning_10-armed-testbed/1000steps_1scale.png?raw=true)
 
 <br />
 
-Step - 5000 <br />
+step - 5000 <br />
 scale - 1
 
 ![](https://github.com/jisupark123/dev-log/blob/main/post_images/hard_reinforcement_learning_10-armed-testbed/5000steps_1scale.png?raw=true)
 
-Greedy한 방법은 local minimum에 가장 빨리 도달한다.
+Greedy 한 방법은 local minimum에 가장 빨리 도달한다.
 
 또한 step을 늘릴수록 $\epsilon$을 작게 설정한 경우가 더 높은 보상을 얻는 것을 확인할 수 있다.
 
 <br />
 
-Step - 1000 <br />
+step - 1000 <br />
 scale - 5
 
 ![](https://github.com/jisupark123/dev-log/blob/main/post_images/hard_reinforcement_learning_10-armed-testbed/1000steps_5scale.png?raw=true)
 
 <br />
 
-Step - 5000 <br />
+step - 5000 <br />
 scale - 5
 
 ![](https://github.com/jisupark123/dev-log/blob/main/post_images/hard_reinforcement_learning_10-armed-testbed/5000steps_5scale.png?raw=true)
@@ -199,9 +199,9 @@ scale - 5
 
 <br />
 
-Step - 20000 <br />
+step - 20000 <br />
 scale - 5
 
-(깔끔한 시각화를 위해 moving average (window=50) 적용)
+(깔끔한 시각화를 위해 moving average (window=100) 적용)
 
 ![](https://github.com/jisupark123/dev-log/blob/main/post_images/hard_reinforcement_learning_10-armed-testbed/20000steps_5scale.png?raw=true)
